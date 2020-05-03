@@ -1,0 +1,157 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-04-11 17:16:35
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-04-12 12:12:12
+ * @Description: 
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Node {
+            constructor(value) {
+                this.next = null;
+                this.value = value;
+            }
+        }
+        class LinkList {
+            constructor() {
+                // 给个虚拟头部！
+                this.head = new Node(null);
+                this.size = 0;
+            }
+            // 头部插入数据
+            insert(value) {
+                let newNode = new Node(value);
+                console.log(newNode);
+                newNode.next = this.head;
+                this.head = newNode;
+                this.size++;
+            }
+            find(value){
+                let curNode = this.head; // 从头部开始遍历
+                while(curNode.value !== null && curNode.value !== value){
+                    // 注意！因为加了虚拟头部，整个链表以空值结束
+                    curNode = curNode.next; // 遍历
+                }
+                return curNode; // 如果找不到也是返回空值（head）
+            }
+            delete(value){
+                // 首个
+                if(this.head.value === value){
+                    this.head = this.head.next;
+                    this.size--;
+                    return true;
+                }
+                let preNode = this.head;
+                while(preNode.value !== null && preNode.next.value !== value){
+                    preNode = preNode.next;
+                }
+                let curNode = this.find(value);
+                if(preNode.next && preNode.next.value === value){
+                    preNode.next = curNode.next;
+                    this.size--;
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            display(){
+                let curNode = this.head;
+                while(curNode.value !== null){
+                    console.log(curNode.value);
+                    curNode = curNode.next;
+                }
+            }
+        }
+        let list = new LinkList();
+        list.insert("1");
+        list.insert("2");
+        list.insert("3");
+        list.insert("4");
+        console.log(list);
+        list.display();
+        console.log(list.delete("4"));
+        console.log(list.delete("2"));
+        console.log(list.delete("3"));
+        // console.log(list.delete(null));
+        console.log(list.delete("1"));
+        console.log(list);
+    </script>
+    <script>
+        class Node2{
+            constructor(value){
+                this.prev = null;
+                this.next = null;
+                this.value = value;
+            }
+        }
+        class LinkList2{
+            constructor(){
+                // 给个虚拟头部！
+                this.head = new Node2(null);
+                this.size = 0;
+            }
+            insert(value){
+                let curNode = new Node2(value);
+                // 头部插入，所以prev为空
+                curNode.prev = null;
+                curNode.next = this.head;
+                this.head.prev = curNode;
+                this.head = curNode;
+                this.size++;
+            }
+            find(value){
+                let curNode = this.head;
+                while(curNode.value !== null && curNode.value !== value){
+                    curNode = curNode.next;
+                }
+                return curNode;
+            }
+            delete(value){
+                if(this.head.value === value){
+                    this.head = this.head.next;
+                    this.size--;
+                    return true;
+                }
+                let curNode = this.find(value);
+                if(curNode.next !== null){
+                    curNode.prev.next = curNode.next;
+                    curNode.next.prev = curNode.prev;
+                    this.size--;
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            display(){
+                let curNode = this.head;
+                while(curNode.next !== null){
+                    console.log(curNode.value);
+                    curNode = curNode.next;
+                }
+            }
+        }
+        let list2 = new LinkList2();
+        list2.insert("1");
+        list2.insert("2");
+        list2.insert("3");
+        list2.insert("4");
+        list2.delete("1");
+        list2.delete("2");
+        list2.delete("3");
+        list2.delete("4");
+        console.log(list2);
+        list2.display();
+    </script>
+</body>
+
+</html>

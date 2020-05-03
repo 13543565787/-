@@ -1,0 +1,83 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-04-21 16:48:37
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-04-21 18:58:38
+ * @Description: 循环队列
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class SqQueue {
+            // 参数lenght是指队列长度
+            constructor(length) {
+                this.queue = new Array(length);
+                this.size = 0; // 当前队列大小
+                this.head = 0; // 队头（表示下标）
+                this.tail = 0; // 队尾
+                this.len = length; // 队列初始化大小
+            }
+            // 入队
+            enQueue(item) {
+                if (this.size === this.len) {
+                    // 队列已满
+                    return false;
+                }
+                this.size++;
+                this.queue[this.tail] = item;
+                this.tail = (this.tail + 1) % this.len;
+            }
+            // 出队
+            deQueue(item) {
+                if (this.size <= 0) {
+                    // 队列为空
+                    return false;
+                }
+                this.size--;
+                let head = this.head;
+                this.head = (this.head + 1) % this.len;
+                return this.queue[head];
+            }
+            // 判断空
+            isEmpty() {
+                return this.size === 0;
+            }
+            // 重排
+            resize(){
+                let arr = [];
+                for(let i = 0; i < this.len; i++){
+                    arr[i] = this.queue[(i+this.head) % this.len];
+                }
+                this.queue = arr;
+                this.head = 0;
+                this.tail = this.size % this.len;
+            }
+        }
+        let arr = new SqQueue(5);
+        console.log(arr);
+        arr.enQueue("11");
+        arr.enQueue("22");
+        arr.enQueue("33");
+        arr.enQueue("44");
+        arr.enQueue("55");
+        arr.deQueue();
+        arr.enQueue("44");
+        arr.deQueue();
+        arr.enQueue("77");
+        console.log(arr.deQueue());
+        arr.enQueue("88");
+
+        // arr.resize();
+        console.log(arr);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-04-14 11:19:12
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-04-15 14:30:57
+ * @Description: 
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Heap {
+            constructor(arr = []) {
+                // 接收参数arr是数组
+                this.data = [...arr];
+                this.size = this.data.length;
+                this.rebuildHeap(); // 直接重构
+            }
+            // 最大堆操作
+            // 利用下标进行迭代
+            maxHeapify(index) {
+                let max = index;
+                if (max >= this.size) {
+                    return;
+                }
+                const l = index * 2 + 1; // 左节点
+                const r = index * 2 + 2; // 右节点
+                // 首先保证存在l和r这两个结点
+                if (l < this.size && this.data[l] > this.data[max]) {
+                    max = l; // 获取最大值
+                }
+                if (r < this.size && this.data[r] > this.data[max]) {
+                    max = r;
+                }
+                // 如果max没变，则证明已经符合二叉堆
+                if (max === index) {
+                    return; // 无需操作
+                }
+                // 父节点与最大结点交换值
+                const t = this.data[index];
+                this.data[index] = this.data[max];
+                this.data[max] = t;
+                // 继续递归往下
+                return this.maxHeapify(max);
+            }
+            // 重构二叉堆
+            rebuildHeap() {
+                const n = Math.floor(this.size / 2);
+                for (let i = n - 1; i >= 0; i--) {
+                    this.maxHeapify(i);
+                }
+            }
+            // 排序
+            sort() {
+                for (let i = this.size - 1; i > 0; i--) {
+                    let t = this.data[i];
+                    this.data[i] = this.data[0];
+                    this.data[0] = t;
+                    this.size --;
+                    this.maxHeapify(0); // 从上往下操作
+                }
+                // this.size = this.data.length; // 恢复size
+            }
+            // 插入
+            insert(value){
+                this.data[this.size++] = value;
+                if(this.isHeap()){
+                    return;
+                }
+                this.rebuildHeap();
+            }
+            // 删除
+            delete(index){
+                if(index > this.size){
+                    return ;
+                }
+                this.data.splice(index,1);
+                if(this.isHeap()){
+                    return;
+                }
+                // this.rebuildHeap();
+                // 这里不需要重构，因为原本就是堆结构，只要在这个节点上heapify即可
+                this.maxHeapify(index);
+            }
+            // 判断堆结构
+            isHeap(){
+                const n = Math.floor(this.size/2);
+                for(let i = n-1; i >=0; i--){
+                    // 不存在则给最小值。
+                    const l = this.data[i*2+1] || Number.MIN_SAFE_INTEGER;
+                    const r = this.data[i*2+2] || Number.MIN_SAFE_INTEGER;
+                    const max = Math.max(this.data[i],l,r);
+                    if(max !== this.data[i]){
+                        console.log("!!!!!!");
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        // let arr = [15, 2, 3, 12, 5, 2, 8, 4, 7];
+        let arr = [4,2,1];
+        let heap = new Heap(arr);
+        console.log(heap.data);
+        // heap.sort();
+        heap.insert(3);
+        console.log(heap.data);
+    </script>
+</body>
+
+</html>

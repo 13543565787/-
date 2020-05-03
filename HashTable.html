@@ -1,0 +1,178 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-04-22 11:08:06
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-04-22 18:23:16
+ * @Description: 哈希表
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class HashTable {
+            constructor() {
+                // 对数组大小常见的限制是：数组长度应该是一个质数。
+                this.table = new Array(137);
+            }
+            // 哈希函数，获取对应key的下标
+            simpleHash(data) {
+                let total = 0;
+                for (let i = 0; i < data.toString().length; i++) {
+                    total += data.charCodeAt(i);
+                }
+                // 返回key对应的下标
+                return total % this.table.length;
+            }
+            put(key, value) {
+                let pos = this.simpleHash(key);
+                this.table[pos] = value;
+            }
+            get(key) {
+                let pos = this.simpleHash(key);
+                return this.table[pos];
+            }
+            showAll() {
+                let n = 0;
+                this.table.forEach((item, index) => {
+                    if (item) {
+                        console.log(index + ':' + item);
+                    }
+                })
+            }
+        }
+
+        let hashTable = new HashTable();
+        hashTable.put('1', 'aaa');
+        hashTable.put('2', 'bbb');
+        hashTable.put('3', 'ccc');
+        hashTable.put('4', 'ddd');
+        hashTable.showAll();
+        console.log(hashTable.get('4'));
+
+    </script>
+    <script>
+        class Node {
+            constructor(key, value) {
+                this.key = key;
+                this.value = value;
+                this.next = null;
+            }
+        }
+        class LinkList{
+            constructor(){
+                this.head = new Node(null,null);
+                this.size = 0;
+            }
+            insert(key,value){
+                let node = new Node(key,value);
+                node.next = this.head;
+                this.head = node;
+                this.size ++;
+            }
+            find(key){
+                let curNode = this.head;
+                while(curNode.key !== key && curNode.key !== null){
+                    curNode = curNode.next;
+                }
+                if(curNode.key === key){
+                    return curNode.value;
+                }else{
+                    return undefined;
+                }
+            }
+        }
+        class HashTable2 {
+            constructor() {
+                this.table = new Array(137);
+            }
+            simpleHash(key) {
+                let total = 0;
+                for (let i = 0; i < key.toString().length; i++) {
+                    total += key.charCodeAt(i);
+                }
+                return total % this.table.length;
+            }
+            put(key, value) {
+                let pos = this.simpleHash(key);
+                if (!this.table[pos]) {
+                    // 如果是空值，则进行赋值
+                    this.table[pos] = new LinkList();
+                }
+                this.table[pos].insert(key,value);
+            }
+            get(key){
+                let pos = this.simpleHash(key);
+                if(!this.table[pos]){
+                    console.log("空值！");
+                    return undefined;
+                }
+                return this.table[pos].find(key);
+            }
+        }
+        let hashTable2 = new HashTable2();
+        console.log(hashTable2);
+        hashTable2.put("1","a");
+        hashTable2.put("1","b");
+        hashTable2.put("1","c");
+        hashTable2.put("11","aa");
+        hashTable2.put("11","bb");
+        console.log(hashTable2.get("1"));
+
+    </script>
+    <script>
+        class LinearProbingHashST{
+            constructor(){
+                this.table = [];
+                this.values = [];
+            }
+            simpleHash(key) {
+                let total = 0;
+                for (let i = 0; i < key.toString().length; i++) {
+                    total += key.charCodeAt(i);
+                }
+                return total % 137;
+            }
+            put(key,value){
+                let pos = this.simpleHash(key);
+                if(!this.table[pos]){
+                    this.table[pos] = key;
+                    this.values[pos] = value;
+                }else{
+                    while(this.table[pos]){
+                        pos++;
+                    }
+                    this.table[pos] = key;
+                    this.values[pos] = value;
+                }
+            }
+            get(key){
+                let pos = simpleHash(key);
+                if(pos >= 0){
+                    for(let i = pos;this.table[i];i++){
+                        if(this.table[i] === key){
+                            return this.values[i];
+                        }
+                    }
+                }
+                return undefined;
+            }
+        }
+        let linearProbingHashST = new LinearProbingHashST();
+        linearProbingHashST.put("1",'aa');
+        linearProbingHashST.put("2",'bb');
+        linearProbingHashST.put("3",'cc');
+        linearProbingHashST.put("7",'dd');
+        linearProbingHashST.put("1",'aaaaa');
+        console.log(linearProbingHashST);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-05-02 18:05:54
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-05-03 00:24:28
+ * @Description: 平衡二叉树
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Node {
+            constructor(value) {
+                this.left = null;
+                this.right = null;
+                this.value = value;
+                this.height = 1; // 需要记录当前节点的深度
+            }
+        }
+        class AVL {
+            constructor() {
+                this.root = null;
+            }
+            addNode(value) {
+                this.root = this._addNode(this.root, value);
+            }
+            _addNode(node, value) {
+                // 此函数的递归，是指在当前node节点下添加一个value，然后返回当前node
+                if (node === null) {
+                    return new Node(value);
+                }
+                // 先添加节点，然后再调整树的平衡
+                if (node.value > value) {
+                    node.left = this._addNode(node.left, value);
+                } else {
+                    node.right = this._addNode(node.right, value);
+                }
+                // 相当于添加一个子树，当前node的高度增加1，且每一个节点都需要重新迭代一次
+                node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+                // 递归结束的时候，相当于在树中增加一个节点，则会有可能产生不平衡的情况
+                // 也就是在插入一个元素时才会触发不平衡的情况产生
+                let balanceFactor_node = this.getBalanceFactor(node);
+                let balanceFactor_left = this.getBalanceFactor(node.left);
+                let balanceFactor_right = this.getBalanceFactor(node.right);
+                // 产生不平衡，是左右子树高度差大于1
+                if (Math.abs(balanceFactor_node) > 1) {
+                    // 左左情况，右旋
+                    if (balanceFactor_node > 1 && balanceFactor_left >= 0) {
+                        // 注意，这里的balanceFactor_left=0，是左子树满的时候的情况，
+                        return this.rightRotate(node);
+                    } else if (balanceFactor_node < -1 && balanceFactor_right <= 0) {
+                        // 右右情况，左旋
+                        return this.leftRotate(node);
+                    } else if (balanceFactor_node > 1 && balanceFactor_left < 0) {
+                        // 左右情况，左子树左旋，然后再根结点右旋
+                        node.left = this.leftRotate(node.left);
+                        return this.rightRotate(node);
+                    } else if (balanceFactor_node < -1 && balanceFactor_right > 0) {
+                        // 右左情况，右子树右旋，然后再根结点左旋
+                        node.right = this.rightRotate(node.right);
+                        console.log("111",this.root);
+                        return this.leftRotate(node);
+                    }
+                }
+
+                return node; // 最后返回当前node
+            }
+            getHeight(node) {
+                if (node === null) {
+                    return 0;
+                }
+                return node.height;
+            }
+            // 获取左右子树高度的差值，用于判断4种需要选装情况
+            getBalanceFactor(node) {
+                if(node === null){
+                    return 0;
+                }
+                return this.getHeight(node.left) - this.getHeight(node.right);
+            }
+            // 右旋
+            rightRotate(node) {
+                // 右旋也就是当前node节点变成右子树，而node的左子树变成父子节点
+                let newRoot = node.left;
+                // 新的父子节点的右子树需要迁移到原本node的左边，因为比node节点小
+                let moveNode = newRoot.right;
+                newRoot.right = node;
+                node.left = moveNode;
+                // 更新树的高度！就当前的节点和新的父节点需要更新高度
+                node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+                newRoot.height = Math.max(this.getHeight(newRoot.left), this.getHeight(newRoot.right)) + 1;
+                // 把新的父节点返回出去，相当于将原本的node转变成新的树结构
+                return newRoot;
+            }
+            // 左旋
+            leftRotate(node) {
+                let newRoot = node.right;
+                let moveNode = newRoot.left;
+                newRoot.left = node;
+                node.right = moveNode;
+                node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+                newRoot.height = Math.max(this.getHeight(newRoot.left), this.getHeight(newRoot.right)) + 1;
+                return newRoot;
+            }
+        }
+        let avl = new AVL();
+        avl.addNode(4);
+        avl.addNode(1);
+        avl.addNode(8);
+        avl.addNode(6);
+        avl.addNode(9);
+        // console.log(avl.root);
+        avl.addNode(5);
+        console.log(avl.root);
+    </script>
+</body>
+
+</html>

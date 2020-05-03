@@ -1,0 +1,50 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-04-11 10:09:08
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-04-11 13:18:58
+ * @Description: 
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        // 栈
+        class Stack{
+            constructor(){
+                this._items = [];
+            }
+            push(item){
+                this._items.push(item);
+            }
+            pop(){
+                return this._items.pop();
+            }
+            // 返回栈顶元素，但不改变栈
+            peek(){
+                return this._items[this._items.length-1]
+            }
+            isEmpty(){
+                return !this._items.length;
+            }
+            size(){
+                return this._items.length;
+            }
+            clear(){
+                this._items = [];
+            }
+        }
+        let s = new Stack();
+        console.log(s);
+        s.push([1,2,3]);
+        console.log(s.peek());
+        s.push("1111");
+    </script>
+</body>
+</html>
