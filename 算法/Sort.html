@@ -1,0 +1,90 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-05-03 11:14:36
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-05-03 19:44:38
+ * @Description: 排序算法
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 冒泡排序
+        // 冒泡的关键在于沉底和上浮，每一次遍历把最大或者最小的值，放在最后面。
+        function bubbleSort(arr = []) {
+            let len = arr.length;
+            for (let i = 0; i < len; i++) {
+                for (let j = 0; j < len - i - 1; j++) {
+                    // 因为每次遍历就沉底，所以最后一个元素不需要再遍历。
+                    // 因为遍历需要与后一个元素进行比对，所以j<len-i-1
+                    if (arr[j] < arr[j + 1]) {
+                        let temp = arr[j + 1];
+                        arr[j + 1] = arr[j];
+                        arr[j] = temp;
+                    }
+                }
+            }
+            return arr;
+        }
+        // 插入排序
+        // 插入排序的关键在于填坑，前面比自己大的元素依次向后移，直到空出一个"坑"，然后把目标元素插入"坑"中
+        function insertSort(arr) {
+            let len = arr.length;
+            for (let i = 1; i < len; i++) {
+                // 从第二个元素开始
+                let x = arr[i];
+                // 如果不符合则后移，直到插入合适的位置
+                for (var j = i; j > 0 && arr[j - 1] < x; j--) {
+                    arr[j] = arr[j - 1];
+                }
+                arr[j] = x; // arr[j]要么已经后移，要么就是当前i位置
+                // 注意，插入排序，可以实现去重！！！
+            }
+            return arr;
+        }
+        // 希尔排序
+        // 希尔排序也叫 递减增量排序算法，是插入排序的一种神龟进化版。
+        // 递减增量呢，就是定义一个间隔序列，例如是5，3，1。第一次处理，会处理所有间隔为5的，下一次会处理间隔为3的，最后一次处理间隔为1的元素。也就是相邻元素执行标准插入排序。
+        // 相同的元素可能在各自的插入排序中移动，最后其稳定性就会被打乱，所以shell排序是不稳定的。
+        // 增量的取法如下：第一次增量的取法为:d=count/2;第二次增量的取法为:d=(count/2)/2;最后一直到: d=1;
+        function shellSort(arr) {
+            let len = arr.length;
+            let gap = Math.floor(len / 2);
+            while (gap > 0) {
+                for (let i = gap; i < len; i++) {
+                    let temp = arr[i];
+                    for (var j = i; j > 0 && arr[j - gap] < temp; j = j - gap) {
+                        arr[j] = arr[j - gap];
+                    }
+                    arr[j] = temp;
+                }
+                gap = Math.floor(gap / 2);
+            }
+            return arr;
+        }
+
+
+
+
+
+
+
+        let arr = [6, 4, 3, 5, 1, 2, 7, 9, 8];
+        // bubbleSort(arr);
+        // insertSort(arr);
+        shellSort(arr);
+        console.log(arr);
+
+
+
+    </script>
+</body>
+
+</html>
