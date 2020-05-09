@@ -1,0 +1,81 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-05-06 11:28:23
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-05-06 15:24:51
+ * @Description: 贪心算法
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 最少硬币找零问题
+        // 美国面额硬币有：1，5，10，25。我们给36美分的零钱，看能得怎样的结果
+        // 找零钱问题使用贪心算法并不能得到整体最优解，其结果可能只是最优解的很好近似。
+        // 比如，如果提供找零的面值是11，5，1，找零15。
+        // 使用贪心算法找零方式为11+1+1+1+1，需要五枚硬币而最优解为5+5+5，只需要3枚硬币。
+        function greedyCoins(coins = [], amount){
+            // 传参arr是零钱面值，amount是需要找零的总数
+            var coins = coins.sort(function(a,b){
+                return b-a; // 由大到小排序
+            });
+            let re = [];
+            for(let i = 0; i< coins.length; i++){
+                while(amount>=coins[i]){
+                    amount = amount - coins[i];
+                    re.push(coins[i]);
+                }
+            }
+            return re;
+        }
+        // let arr = [10,5,2,1];
+        // console.log(greedyCoins(arr,6));
+
+
+        // 背包问题
+        // 部分背包问题：固定容积的背包能放入物品的总最大价值
+        // 按比例降序尽可能多放入物品
+        // 物品 A B C D
+        // 价格 50 220 60 60
+        // 尺寸 5 20 10 12
+        // 比率 10 11 6 5
+        function greedyPackage(values,weights,capacity){
+            // 参数value代表每个物品的价值，weights代表每个物品的重量，capacity代表背包能承受的重量
+            let re = 0; // 返回最大价值
+            let remainCapacity = capacity; // 背包剩余重量
+            // 获取性价比
+            let sortArr = values.map((item,index)=>{
+                return {
+                    'value':item,
+                    'weight':weights[index],
+                    'ratio':item / weights[index], // 性价比
+                }
+            })
+            // 按照性价比（单位重量最大的）排序
+            sortArr.sort(function(a,b){
+                return b.ratio - a.ratio;
+            })
+            sortArr.map((item,index)=>{
+                // 根据性价比从大到小进行放置
+                let num = Math.floor(remainCapacity/item.weight);
+                remainCapacity -= num*item.weight;
+                re += num*item.value;
+            })
+            return re;
+        }
+        let values = [50,220,60,60];
+        let weights = [5,20,10,12];
+        let capacity = 32;
+        console.log(greedyPackage(values,weights,capacity));
+
+        let a = 5;
+        let b = 3;
+        console.log(Math.floor(a/b));
+    </script>
+</body>
+</html>

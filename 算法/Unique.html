@@ -1,0 +1,106 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-05-05 13:49:06
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-05-05 15:48:49
+ * @Description: 去重
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 遍历数组法
+        // 遍历原数组，然后利用另一个数组进行判断是否存在相同值，O(n^2);
+        function unique1(arr = []) {
+            let re = [];
+            arr.forEach((item, index) => {
+                if (re.indexOf(item) == -1) {
+                    // indexOf的值为-1代表re数组不存在这个值
+                    re.push(item);
+                }
+            })
+            return re;
+        }
+
+        // ES6实现-Set集合
+        // ES6提供了新的数据结构Set。它类似于数组，但是成员的值都是唯一的，没有重复的值。Set函数可以接受一个数组（或类似数组的对象）作为参数，用来初始化。
+        function unique2(arr = []) {
+            let re = new Set(arr);
+            // re是一个集合对象！！！需要转变成数组的形式
+            return [...re];
+        }
+
+        // 对象键值对法
+        // 注意点： 判断 是否为js对象键时，会自动对传入的键执行“toString()”，不同的键可能会被误认为一样；
+        // 例如传入数字1和字符串‘1’，会认为是同一个键，会覆盖 obj[1]===obj["1"] 。解决上述问题还是得调用“indexOf”。
+        //速度最快， 占空间最多（空间换时间）
+        function unique3(arr = []) {
+            let obj = {};
+            let re = [];
+            let len = arr.length;
+            for (let i = 0; i < len; i++) {
+                let value = arr[i];
+                let type = typeof value;
+                // hasOwnProperty() 方法会返回一个布尔值，指示对象自身属性中（非继承属性）是否具有指定的属性
+                if (!obj.hasOwnProperty(value)) {
+                    obj[value] = [type]; // 因为数字1和字符串‘1’，会产生相同键，所以将键的类型存入数组中。
+                    re.push(value);
+                } else if (obj[value].indexOf(type) === -1) {
+                    // 找不到当前的类型，这个代表产生相同的键，则新增
+                    obj[value].push(type);
+                    re.push(value);
+                }
+            }
+            return re;
+        }
+
+        function deepClone(origin, target) {
+            // 深度拷贝target到origin中
+            var target = target || {};
+            // 利用for in循环遍历当前对象中的所有键key
+            for (let key in target) {
+                if (target.hasOwnProperty(key)){
+                    if(target[key] !== null && typeof target[key] === 'object'){
+                        // 对象中的对象类型需要递归拷贝
+                        // 判断对象类型
+                        let type = Object.prototype.toString.call(target[key]);
+                        // 进行初始化
+                        origin[key] = type === '[object Array]'? []:{};
+                        // 继续递归进行拷贝对象类型
+                        // 类似树的深度遍历一样，往下一层遍历
+                        deepClone(origin[key],target[key]);
+                    }else{
+                        // 普通类型，就逐一拷贝
+                        origin[key] = target[key];
+                    }
+                }
+            }
+        }
+
+
+        let arr = [5, 1, 2, 3, 3, 2, 1, 4, '1', "2"];
+        console.log(arr);
+        console.log(unique3(arr));
+        let a = {
+            aa:{
+                bb:1,
+            }
+        }
+        a.aa.bb = 2;
+        let b = {};
+        deepClone(b,a);
+        b.aa.bb = 3;
+
+        console.log(a);
+
+    </script>
+</body>
+
+</html>
