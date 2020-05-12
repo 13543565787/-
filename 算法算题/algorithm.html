@@ -1,0 +1,260 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-05-10 15:10:04
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-05-12 14:47:44
+ * @Description: 面试算法题
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // TODO: 素数，质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数。
+        // 如2 3 5 7
+        // 方法一，全部遍历一次看看有没有整除的。
+        function isPrime(num) {
+            if (num < 2) {
+                return false;
+            }
+            if (num === 2) {
+                return true;
+            }
+            for (let i = 2; i < num; i++) {
+                if (num % i === 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        // 方法二，素数的优化，可以通过缩小范围，比如去掉偶数的判断
+        function isPrime2(num) {
+            if (num < 2) {
+                return false;
+            }
+            if (num === 2) {
+                return true;
+            }
+            if (num % 2 === 0) {
+                return false;
+            }
+            for (let i = 3; i < num; i += 2) {
+                if (num % i === 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        // console.log(isPrime(17));
+        // console.log(isPrime(237));
+        // console.log(isPrime2(17));
+        // console.log(isPrime2(237));
+
+        // TODO: 素数因子，如180的质数因子为2 2 3 3 5
+        // 某个整数的质数因子，也就是整数的因式分解（所有的因子都要分解成质数）
+        // 质数为乘法的最小单元，所有整数都可以表示成 质数的乘积 的形式
+        function primeFactors(n) {
+            let factors = [];
+            while (n !== 1) {
+                if (isPrime(n)) {
+                    factors.push(n);
+                    break;
+                } else {
+                    for (let i = 2; i < n; i++) {
+                        if (n % i === 0) {
+                            factors.push(i);
+                            n /= i;
+                        }
+                    }
+                }
+            }
+            return factors;
+        }
+        // console.log(primeFactors(69));
+
+        // TODO: 斐波那契
+        // F[n]=F[n-1]+F[n-2](n>=3,F[1]=1,F[2]=1)
+        function fibonacci(n) {
+            let f = [0, 1, 1]; // 下标代表位置
+            if (n <= 2) {
+                return 1;
+            }
+            // 为了不混淆，i就代表f中的位置而不是下标
+            for (let i = 3; i <= n; i++) {
+                f[i] = f[i - 1] + f[i - 2];
+            }
+            return f[n];
+        }
+        // console.log(fibonacci(12));
+
+        // TODO: 最大公约数，如14,21最大公约数为7，13,17最大公约数为1
+        function greatestCommonDivisor(a, b) {
+            if (a < 2 || b < 2) {
+                return 1;
+            }
+            let min = Math.min(a, b);
+            let re = 1; // 初始化为1，就是无法找到相同的公约数就返回1
+            for (let i = 2; i <= min; i++) {
+                if (a % i === 0 && b % i === 0) { // 如果出现同时能整除的，就是公约数
+                    re = i; // 因为之后可能会出现更大的，所以需要继续循环迭代
+                }
+            }
+            return re;
+        }
+        // console.log(greatestCommonDivisor(14, 21));
+        // console.log(greatestCommonDivisor(169, 69));
+        // 其中有个辗转相除法可以求得
+        // gcd（x，y）=gcd（y，x%y），gcd（x，0）=x
+        function greatestCommonDivisor2(a, b) {
+            if (b === 0) {
+                return a;
+            }
+            return greatestCommonDivisor2(b, a % b);
+        }
+        // console.log(greatestCommonDivisor2(14, 21));
+        // console.log(greatestCommonDivisor2(169, 69));
+
+        // TODO: 最小公倍数，如30与45的最小公倍数为45
+        // 有个穷举法，就是两个数中最大数开始，直到找到可以两者整除的数
+        function minCommonMultiple(a, b) {
+            let max = Math.max(a, b);
+            while (1) {
+                // 注意，这里是max%a而不是a%max
+                if (max % a === 0 && max % b === 0) {
+                    return max;
+                }
+                max++;
+            }
+        }
+        // 公式法，最小公倍数=两整数的乘积÷最大公约数
+        function minCommonMultiple2(a, b) {
+            let re = a * b / greatestCommonDivisor2(a, b);
+            return re;
+        }
+        // console.log(minCommonMultiple(30,45));
+        // console.log(minCommonMultiple2(30,45));
+
+        // TODO: 合并两个排序的数组
+        // 以指针的形式进行切换
+        function mergeSortedArray(arr1, arr2) {
+            if (arr1.length === 0 || arr2.length === 0) {
+                return arr1.concat(arr2); // 两个数组合并
+            }
+            let merge = [];
+            let i = 0; // 利用指针进行合并
+            let j = 0;
+            while (i < arr1.length && j < arr2.length) {
+                if (arr1[i] < arr2[j]) {
+                    merge.push(arr1[i]);
+                    i++;
+                } else {
+                    merge.push(arr2[j]);
+                    j++;
+                }
+            }
+            if (i < arr1.length) {
+                // 注意，concat是不影响原数组的！！！
+                return merge.concat(arr1.slice(i));
+            } else {
+                return merge.concat(arr2.slice(j));
+            }
+        }
+        // let arr1 = [3,4];
+        // let arr2 = [1, 2,5,6];
+        // console.log(mergeSortedArray(arr1, arr2));
+
+        // TODO: 字符串反向
+        // 常规做法
+        function reverse(str) {
+            if (!str || str.length < 2) return str;
+            let re = '';
+            for (let i = str.length - 1; i >= 0; i--) {
+                re += str[i];
+            }
+            return re;
+        }
+        // 通过reverse方法，reverse() 方法用于颠倒数组中元素的顺序。
+        function reverse2(str) {
+            if (!str || str.length < 2) return str;
+            return str.split("").reverse().join("");
+        }
+        let str = 'abc123';
+        // console.log(reverse(str));
+        // console.log(reverse2(str));
+
+        // TODO: 删除重复的字符，
+        // 空间换时间。acsII共256个字符。使用256bit记录每个字符是否已出现过。遍历字符串，若已出现过则将该字符替换为'\0'
+        // str.charCodeAt();  String.fromCharCode(num1);
+        function removeDuplicateChar(str) {
+            // 用空间换时间，把所有的字符转换成ASCII码放入数组中记录
+            let charCount = [];
+            str.split("").forEach((item, index) => {
+                let ascii = item.charCodeAt();
+                if (charCount[ascii]) {
+                    charCount[ascii]++;
+                } else {
+                    charCount[ascii] = 1;
+                }
+            });
+            let re = "";
+            console.log(charCount);
+            charCount.forEach((item, index) => {
+                if (item === 1) {
+                    re += String.fromCharCode(index);
+                }
+            })
+            return re;
+        }
+        // console.log(removeDuplicateChar('Learn more javascript dude'));
+
+        // TODO: 两数之和
+        // 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
+        // 穷举法
+        function sumFinder(nums, target) {
+            for (let i = 0; i < nums.length; i++) {
+                for (let j = 0; j < nums.length; j++) {
+                    if (nums[i] + nums[j] === target) {
+                        return [i, j];
+                    }
+                }
+            }
+            return [];
+        }
+        // 方法二，构建哈希表
+        // 用空间换时间，因为nums遍历需要O(n)，而构建哈希表，遍历只需要O(1)
+        // 因为JavaScript对象本质就是哈希表，可以讲nums放入对象中
+        // 其中可以通过遍历一次，搜索是否存在target-nums[i]这个数字（因为nums[i]+nums[j]=target）
+        function sumFinder2(nums, target) {
+            let obj = {};
+            nums.forEach((item, index) => {
+                if (!obj[item]) {
+                    obj[item] = index;
+                }
+            })
+            for (let i = 0; i < nums.length; i++) {
+                let j = obj[target - nums[i]]; // 对象中键值对，键为nums的元素，值为对应元素的index
+                if (!!j && j !== i) { // 避免取到相同的值
+                    return [i, j];
+                }
+            }
+        }
+        // 方法三，还可以使用js中的map
+        // let nums = [6, 4, 3, 2, 1, 7];
+        // console.log(sumFinder(nums, 9));
+        // console.log(sumFinder2(nums, 9));
+
+        // TODO: 子字符串
+        function subStringFinder(str,subStr){
+            console.log(str.indexOf(subStr));
+        }
+        subStringFinder('ababa','ba');
+    </script>
+</body>
+
+</html>
