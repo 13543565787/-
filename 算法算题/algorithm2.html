@@ -1,0 +1,513 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-05-13 12:01:57
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-05-15 17:07:16
+ * @Description: 剑指offer
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // TODO: 二维数组中的查找
+        // 在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+        // 思路，因为递增关系，只要a[0][i]>target就不需要遍历该列了！
+        function Find(target, array) {
+            // 参数array是一个二维数组
+            let row_len = array.length;
+            let col_len = array[0].length;
+            let jIndex = col_len - 1;
+            for (let i = 0; i < row_len; i++) {
+                for (let j = jIndex; j >= 0; j--) {
+                    if (array[i][j] > target) {
+                        // 剪枝，直接排除当前和右边的列
+                        jIndex--;
+                    }
+                    if (array[i][j] === target) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        // console.log(Find(2,[[1,3,8,9],[2,4,9,12],[4,7,10,13],[6,8,11,15]]));
+
+        // TODO: 替换空格
+        // 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+        // 方法一，普通做法
+        function replaceSpace(str) {
+            let newStr = str.split("").map((item) => {
+                if (item === " ") {
+                    return "%20";
+                } else {
+                    return item;
+                }
+            })
+            return newStr.join("");
+        }
+        // 方法二，正则表达式
+        function replaceSpace(str) {
+            return str.replace(/ /g, '%20');
+        }
+        // console.log(replaceSpace('hello world'));
+
+        // TODO: 从尾到头打印链表
+        // 输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
+        // 思路。因为最后是返回一个Array，所以只需要遍历一遍链表再reverse()即可
+        function ListNode(x) {
+            this.val = x;
+            this.next = null;
+        }
+        function LinkList() {
+            // this.head = new ListNode(null);
+            this.head = null;
+            this.add = function (v) {
+                let node = new ListNode(v);
+                node.next = this.head;
+                this.head = node;
+            }
+        }
+        // let list = new LinkList();
+        // list.add(1);
+        // list.add(2);
+        // list.add(3);
+        // list.add(4);
+        function printListFromTailToHead(head) {
+            // write code here
+            if (!head) {
+                return 0;
+            }
+            let re = new Array();
+            let curNode = head;
+            while (curNode) {
+                re.push(curNode.val);
+                curNode = curNode.next;
+            }
+            return re.reverse();
+        }
+        // console.log(printListFromTailToHead(list.head));
+
+        // TODO: 重建二叉树
+        // 输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+        function TreeNode(v) {
+            this.val = v;
+            this.left = null;
+            this.right = null;
+        }
+        function Tree() {
+            this.root = null;
+            this.add = function (v) {
+                this.root = this._add(this.root, v);
+            }
+            this._add = function (node, v) {
+                if (node === null) {
+                    return new TreeNode(v);
+                }
+                if (v > node.val) {
+                    node.right = this._add(node.right, v);
+                } else {
+                    node.left = this._add(node.left, v);
+                }
+                return node;
+            }
+            // 先序遍历
+            this.preTransverse = function () {
+                let arr = [];
+                this._preTransverse(this.root, arr);
+                // console.log("arr", arr);
+                return arr;
+            }
+            this._preTransverse = function (node, arr) {
+                if (node === null) {
+                    return;
+                }
+                // console.log(node);
+                arr.push(node.val);
+                this._preTransverse(node.left, arr);
+                this._preTransverse(node.right, arr);
+            }
+            // 中序遍历
+            this.inTransverse = function () {
+                let arr = [];
+                this._inTransverse(this.root, arr);
+                console.log("arr", arr);
+                return arr;
+            }
+            this._inTransverse = function (node, arr) {
+                if (node === null) {
+                    return;
+                }
+                this._inTransverse(node.left, arr);
+                // console.log(node);
+                arr.push(node.val);
+                this._inTransverse(node.right, arr);
+            }
+        }
+        // let tree = new Tree();
+        // tree.add(4);
+        // tree.add(2);
+        // tree.add(5);
+        // tree.add(1);
+        // tree.add(3);
+        // tree.add(6);
+        // let pre = tree.preTransverse();
+        // let vin = tree.inTransverse();
+        // console.log(tree);
+        // 参数pre和vin指的是先序遍历和中序遍历的输出数组
+        // 重构树，可以使用递归！！！！先序可以确定父节点，而中序根据父节点来分左右子树。然后进行递归
+        // 同时，中序分了左右子树，也可以在先序中的parentIndex+1位置，分出左右子树
+        function reConstructBinaryTree(pre, vin) {
+            if (pre.length < 1 || vin.length < 1) {
+                // 注意边界值
+                return null;
+            }
+            let parent = new TreeNode(pre[0]);
+            let parentIndex = vin.indexOf(pre[0]);
+            let left = vin.slice(0, parentIndex);
+            let right = vin.slice(parentIndex + 1);
+            parent.left = reConstructBinaryTree(pre.slice(1, parentIndex + 1), left);
+            parent.right = reConstructBinaryTree(pre.slice(parentIndex + 1), right);
+            return parent;
+        }
+        // console.log(reConstructBinaryTree(pre, vin));
+
+        // TODO: 用两个栈实现队列
+        // 用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+        // 思路，利用栈2作为出队的栈，每次pop，就将栈1压到栈2pop，然后再重新倒回去栈1
+        let stack1 = [];
+        let stack2 = [];
+        function push(node) {
+            // 第一个栈专门入栈
+            stack1.push(node);
+        }
+        function pop() {
+            if (stack1.length === 0) {
+                return;
+            }
+            // 先将栈1内容压到栈2
+            let temp = stack1.pop();
+            while (temp !== undefined) {
+                stack2.push(temp);
+                temp = stack1.pop(); // 继续出栈！！！
+            }
+            // 栈2的栈顶就是出队的元素
+            let re = stack2.pop();
+            // 最后再把栈2中的内容重新压回栈1
+            temp = stack2.pop();
+            while (temp !== undefined) {
+                stack1.push(temp);
+                temp = stack2.pop(); // 继续出栈！！！
+            }
+            return re;
+        }
+        // push(1);
+        // push(2);
+        // push(3);
+        // push(4);
+        // console.log(pop());
+        // console.log(pop());
+        // console.log(pop());
+        // console.log(pop());
+
+        // TODO: 旋转数组的最小数字
+        // 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+        // {3,4,5,1,2}思路即是，找出不递增的数字，就输出
+        function minNumberInRotateArray(rotateArray) {
+            // write code here
+            let len = rotateArray.length;
+            if (len === 0) {
+                return 0;
+            }
+            let pre = rotateArray[0];
+            for (let i = 1; i < len; i++) {
+                if (rotateArray[i] < pre) {
+                    return rotateArray[i];
+                }
+            }
+        }
+        // console.log(minNumberInRotateArray([3,4,5,1,2]));
+
+        // TODO: 斐波那契数列
+        function Fibonacci(n) {
+            let f = [0, 1];
+            for (let i = 2; i <= n; i++) {
+                f[i] = f[i - 1] + f[i - 2];
+            }
+            return f[n];
+        }
+
+        // TODO: 跳台阶
+        // 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
+        // 思路，使用动态规划。只需用一个一维数组，其中f[i]代表，到当前n级阶级最多的跳法。
+        // 其方程式是斐波那契数列，因为青蛙要跳n级台阶，必须先跳到n-1级和n-2级台阶。
+        // 其问的是跳法！！！不需要所谓的max+1。n-1跳一步，n-2跳两步，他们本身是没有产生+1的，只是前面的基础上多跳一步而已，也就是跳法不变。其中n-1和n-2的跳法都符合跳n台阶的跳法，所以两者相加
+        // 注意！！！f(1) = 1，f(2) = 2。这个和斐波那契不一样
+        function jumpFloor(number) {
+            let f = [0, 1, 2];
+            for (let i = 3; i <= number; i++) {
+                f[i] = f[i - 1] + f[i - 2];
+            }
+            return f[number];
+        }
+        // console.log(jumpFloor(4));
+
+        // TODO: 变态跳台阶
+        // 这是普通跳台阶的拓展，同样道理，f(n) = f(n-1) + f(n-2) + f(n-3) + ... + f(0)
+        // 其中因为 f(n-1) = f(n-2) + f(n-3) + ... + f(0)，所以f(n) = f(n-1) + f(n-1);
+        // 注意，这里设定f(0) = 1;  但实际上f[0] = 0; f[1] = 1;不影响f(n-1)*2的
+        function jumpFloorII(number) {
+            let f = [0, 1];
+            for (let i = 2; i <= number; i++) {
+                f[i] = 2 * f[i - 1];
+            }
+            return f[number];
+        }
+
+        // TODO: 矩阵覆盖
+        // 我们可以用2*1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2*1的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？
+        // 其中的思路是，因为有竖着或横着两种方法。原来f(n-1)的基础上右边加一个竖条，在f(n-2)的基础上右边加两个横条
+        // 也就是f(n)是由f(n-1)和f(n-2)转变而来。所有其类型和跳台阶问题类似。
+        function rectCover(number) {
+            let f = [0, 1, 2];
+            for (let i = 3; i <= number; i++) {
+                f[i] = f[i - 1] + f[i - 2];
+            }
+            return f[number];
+        }
+
+        // TODO: 二进制中1的个数
+        // js中，十进制转二进制：toString(进制数)  二进制转十进制：parseInt("n进制数",n)
+        function NumberOf1(n) {
+            if (n < 0) {
+                n = n >>> 0;
+            }
+            let arr = n.toString(2).split("");
+            let re = 0;
+            arr.forEach((item) => {
+                if (item === '1') {
+                    re++;
+                }
+            })
+            return re;
+        }
+
+        // TODO: 数值的整数次方
+        // 这里有个坑！！！！就是exponent可以是负数
+        function Power(base, exponent) {
+            let re = 1;
+            let n = Math.abs(exponent);
+            for (let i = 0; i < n; i++) {
+                re *= base;
+            }
+            if (exponent < 0) {
+                return 1 / re;
+            }
+            return re;
+        }
+        // 方法二，pow(x,y)返回 x 的 y 次幂。
+        function Power(base, exponent) {
+            return Math.pow(base, exponent);
+        }
+
+        // TODO: 调整数组顺序使奇数位于偶数前面
+        // 输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+        // 其中的奇数和奇数，偶数和偶数之间的相对位置不变。意思是假设以奇数作为参考，就相当于把偶数都抽离出去，那么剩下的所有奇数保持之前的先后顺序。
+        function reOrderArray(array) {
+            let even = [];
+            let odd = [];
+            // 注意，判断奇偶可以利用与&运算符x & 1 === 0为偶数。
+            array.forEach((item) => {
+                if ((item & 1) === 0) {
+                    // 注意！！！！！！必须加上括号才行！！！
+                    even.push(item);
+                } else {
+                    odd.push(item);
+                }
+            })
+            return odd.concat(even);
+        }
+        // let array = [1, 2, 3, 4, 5, 6, 7];
+        // console.log(reOrderArray(array));
+
+        // TODO: 链表中倒数第k个节点
+        // 思路，假设有n个节点，倒数第k个节点就是从头结点开始的第n-k+1个节点
+        function FindKthToTail(head, k) {
+            if (head === null || k <= 0) {
+                return null;
+            }
+            let curNode = head;
+            let n = 0;
+            while (curNode !== null) {
+                curNode = curNode.next;
+                n++;
+            }
+            curNode = head;
+            // 注意，有可能会越界！！！！k大于链表长度
+            if (k > n) {
+                return null;
+            }
+            for (let i = 0; i < n - k; i++) {
+                // 遍历n-k次
+                curNode = curNode.next;
+            }
+            return curNode;
+        }
+        // 方法二，快慢指针，快指针先走k-1步，之后快慢指针同步走，走到快指针走到最后一个结点的时候，慢指针也走到了倒数第k个结点
+        function FindKthToTail2(head, k) {
+            if (head === null || k <= 0) {
+                return null; // 返回一个空对象
+            }
+            let curNode = head;
+            while (k > 1) {
+                curNode = curNode.next;
+                k--;
+            }
+            if (curNode === null) {
+                return null;
+            } else {
+                let k_node = head;
+                curNode = curNode.next; // 需要提前一个
+                while (curNode !== null) {
+                    curNode = curNode.next;
+                    k_node = k_node.next;
+                }
+                return k_node;
+            }
+        }
+
+        // let list = new LinkList();
+        // list.add(1);
+        // list.add(2);
+        // list.add(3);
+        // list.add(4);
+        // console.log(FindKthToTail(list.head,2));
+
+        // TODO: 反转链表
+        // 思路，用数组保存链表节点的值下来，然后再用数组的reverse方法，最后再重构链表
+        // 更好的方法，就是反转后的头结点变成尾节点，不断遍历，然后头部插入有倒序效果，这样就可以反转了
+        // 注意！！！这个反转链表，真的务必注意先后顺序！！！
+        function ReverseList(pHead) {
+            if (pHead === null) {
+                return null;
+            }
+            let newHead = pHead;
+            let curNode = pHead.next; // 直接从下一个开始选择，然后往前移动
+            newHead.next = null; // 反转后的头结点变成尾节点
+            while (curNode !== null) {
+                let temp = curNode.next; // 保存下一个
+                curNode.next = newHead;
+                newHead = curNode;
+                curNode = temp; // 继续迭代下一个
+            }
+            return newHead;
+        }
+        // let list = new LinkList();
+        // list.add(1);
+        // list.add(2);
+        // list.add(3);
+        // list.add(4);
+        // console.log(ReverseList(list.head));
+
+        // 合并两个排序的链表
+        function Merge(pHead1, pHead2) {
+            // write code here
+            if (pHead1 === null) {
+                return pHead2 === null ? null : pHead2;
+            } else if (pHead2 === null) {
+                return pHead1;
+            }
+            let curNode1 = pHead1;
+            let curNode2 = pHead2;
+            let nullNode = new ListNode(-1); // 创建一个虚拟头部，之后再替换！！！
+            nullNode.next = null;
+            let newHead = nullNode; 
+            let tail = newHead; // 合并的新链表，采用尾插法，需要借助tail，指向倒数第一个
+            while (curNode1 !== null && curNode2 !== null) {
+                if (curNode1.val <= curNode2.val) {
+                    let node = new ListNode(curNode1.val);
+                    node.next = tail.next;
+                    tail.next = node;
+                    tail = node; // tail指向倒数第一个节点
+                    curNode1 = curNode1.next;
+                } else {
+                    let node = new ListNode(curNode2.val);
+                    node.next = tail.next;
+                    tail.next = node;
+                    tail = node; // tail指向倒数第一个节点
+                    curNode2 = curNode2.next;
+                }
+            }
+            if (curNode1 === null) {
+                while (curNode2 !== null) {
+                    let node = new ListNode(curNode2.val);
+                    node.next = tail.next;
+                    tail.next = node;
+                    curNode2 = curNode2.next;
+                    tail = node;
+                }
+            } else {
+                while (curNode1 !== null) {
+                    let node = new ListNode(curNode1.val);
+                    node.next = tail.next;
+                    tail.next = node;
+                    curNode1 = curNode1.next;
+                    tail = node;
+                }
+            }
+            newHead = newHead.next;
+            return newHead;
+        }
+        // 以下这个是会改变原链表的
+        function Merge2(pHead1, pHead2) {
+            // write code here
+            if (pHead1 === null) {
+                return pHead2 === null ? null : pHead2;
+            } else if (pHead2 === null) {
+                return pHead1;
+            }
+            let curNode1 = pHead1;
+            let curNode2 = pHead2;
+            let newHead = new ListNode(-1); // 创建一个虚拟头部，之后再替换！！！
+            let tail = newHead; // 指向新链表的尾部
+            while (curNode1 !== null && curNode2 !== null) {
+                if (curNode1.val <= curNode2.val) {
+                    tail.next = curNode1;
+                    curNode1 = curNode1.next;
+                }else{
+                    tail.next = curNode2;
+                    curNode2 = curNode2.next;
+                }
+                tail = tail.next; // 保证指向尾部
+            }
+            if(curNode1 !== null){
+                tail.next = curNode1;
+            }else{
+                tail.next = curNode2;
+            }
+            newHead = newHead.next;
+            // 回收指针，注意，回收指针只需要让他们指向null即可！
+            curNode1 = curNode2 = tail = null;
+            return newHead;
+        }
+        // let list1 = new LinkList();
+        // list1.add(7);
+        // list1.add(5);
+        // list1.add(3);
+        // list1.add(1);
+        // let list2 = new LinkList();
+        // list2.add(10);
+        // list2.add(8);
+        // list2.add(4);
+        // list2.add(2);
+        // console.log(Merge2(list1.head, list2.head));
+    </script>
+</body>
+
+</html>
