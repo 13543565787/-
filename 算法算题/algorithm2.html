@@ -2,7 +2,7 @@
  * @Autor: hjz
  * @Date: 2020-05-13 12:01:57
  * @LastEditors: hjz
- * @LastEditTime: 2020-05-15 17:07:16
+ * @LastEditTime: 2020-05-17 00:38:02
  * @Description: 剑指offer
  -->
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 
 <body>
     <script>
-        // TODO: 二维数组中的查找
+        // TODO: 1.二维数组中的查找
         // 在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
         // 思路，因为递增关系，只要a[0][i]>target就不需要遍历该列了！
         function Find(target, array) {
@@ -39,7 +39,7 @@
         }
         // console.log(Find(2,[[1,3,8,9],[2,4,9,12],[4,7,10,13],[6,8,11,15]]));
 
-        // TODO: 替换空格
+        // TODO: 2.替换空格
         // 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
         // 方法一，普通做法
         function replaceSpace(str) {
@@ -58,7 +58,7 @@
         }
         // console.log(replaceSpace('hello world'));
 
-        // TODO: 从尾到头打印链表
+        // TODO: 3.从尾到头打印链表
         // 输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
         // 思路。因为最后是返回一个Array，所以只需要遍历一遍链表再reverse()即可
         function ListNode(x) {
@@ -94,7 +94,7 @@
         }
         // console.log(printListFromTailToHead(list.head));
 
-        // TODO: 重建二叉树
+        // TODO: 4.重建二叉树
         // 输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
         function TreeNode(v) {
             this.val = v;
@@ -178,45 +178,48 @@
         }
         // console.log(reConstructBinaryTree(pre, vin));
 
-        // TODO: 用两个栈实现队列
+        // TODO: 5.用两个栈实现队列
         // 用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
         // 思路，利用栈2作为出队的栈，每次pop，就将栈1压到栈2pop，然后再重新倒回去栈1
-        let stack1 = [];
-        let stack2 = [];
-        function push(node) {
-            // 第一个栈专门入栈
-            stack1.push(node);
+        function Stack5() {
+            let stack1 = [];
+            let stack2 = [];
+            function push(node) {
+                // 第一个栈专门入栈
+                stack1.push(node);
+            }
+            function pop() {
+                if (stack1.length === 0) {
+                    return;
+                }
+                // 先将栈1内容压到栈2
+                let temp = stack1.pop();
+                while (temp !== undefined) {
+                    stack2.push(temp);
+                    temp = stack1.pop(); // 继续出栈！！！
+                }
+                // 栈2的栈顶就是出队的元素
+                let re = stack2.pop();
+                // 最后再把栈2中的内容重新压回栈1
+                temp = stack2.pop();
+                while (temp !== undefined) {
+                    stack1.push(temp);
+                    temp = stack2.pop(); // 继续出栈！！！
+                }
+                return re;
+            }
+            push(1);
+            push(2);
+            push(3);
+            push(4);
+            console.log(pop());
+            console.log(pop());
+            console.log(pop());
+            console.log(pop());
         }
-        function pop() {
-            if (stack1.length === 0) {
-                return;
-            }
-            // 先将栈1内容压到栈2
-            let temp = stack1.pop();
-            while (temp !== undefined) {
-                stack2.push(temp);
-                temp = stack1.pop(); // 继续出栈！！！
-            }
-            // 栈2的栈顶就是出队的元素
-            let re = stack2.pop();
-            // 最后再把栈2中的内容重新压回栈1
-            temp = stack2.pop();
-            while (temp !== undefined) {
-                stack1.push(temp);
-                temp = stack2.pop(); // 继续出栈！！！
-            }
-            return re;
-        }
-        // push(1);
-        // push(2);
-        // push(3);
-        // push(4);
-        // console.log(pop());
-        // console.log(pop());
-        // console.log(pop());
-        // console.log(pop());
+        // Stack5();
 
-        // TODO: 旋转数组的最小数字
+        // TODO: 6.旋转数组的最小数字
         // 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
         // {3,4,5,1,2}思路即是，找出不递增的数字，就输出
         function minNumberInRotateArray(rotateArray) {
@@ -234,7 +237,7 @@
         }
         // console.log(minNumberInRotateArray([3,4,5,1,2]));
 
-        // TODO: 斐波那契数列
+        // TODO: 7.斐波那契数列
         function Fibonacci(n) {
             let f = [0, 1];
             for (let i = 2; i <= n; i++) {
@@ -243,7 +246,7 @@
             return f[n];
         }
 
-        // TODO: 跳台阶
+        // TODO: 8.跳台阶
         // 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
         // 思路，使用动态规划。只需用一个一维数组，其中f[i]代表，到当前n级阶级最多的跳法。
         // 其方程式是斐波那契数列，因为青蛙要跳n级台阶，必须先跳到n-1级和n-2级台阶。
@@ -258,7 +261,7 @@
         }
         // console.log(jumpFloor(4));
 
-        // TODO: 变态跳台阶
+        // TODO: 9.变态跳台阶
         // 这是普通跳台阶的拓展，同样道理，f(n) = f(n-1) + f(n-2) + f(n-3) + ... + f(0)
         // 其中因为 f(n-1) = f(n-2) + f(n-3) + ... + f(0)，所以f(n) = f(n-1) + f(n-1);
         // 注意，这里设定f(0) = 1;  但实际上f[0] = 0; f[1] = 1;不影响f(n-1)*2的
@@ -270,7 +273,7 @@
             return f[number];
         }
 
-        // TODO: 矩阵覆盖
+        // TODO: 10.矩阵覆盖
         // 我们可以用2*1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2*1的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？
         // 其中的思路是，因为有竖着或横着两种方法。原来f(n-1)的基础上右边加一个竖条，在f(n-2)的基础上右边加两个横条
         // 也就是f(n)是由f(n-1)和f(n-2)转变而来。所有其类型和跳台阶问题类似。
@@ -282,7 +285,7 @@
             return f[number];
         }
 
-        // TODO: 二进制中1的个数
+        // TODO: 11.二进制中1的个数
         // js中，十进制转二进制：toString(进制数)  二进制转十进制：parseInt("n进制数",n)
         function NumberOf1(n) {
             if (n < 0) {
@@ -298,7 +301,7 @@
             return re;
         }
 
-        // TODO: 数值的整数次方
+        // TODO: 12.数值的整数次方
         // 这里有个坑！！！！就是exponent可以是负数
         function Power(base, exponent) {
             let re = 1;
@@ -316,7 +319,7 @@
             return Math.pow(base, exponent);
         }
 
-        // TODO: 调整数组顺序使奇数位于偶数前面
+        // TODO: 13.调整数组顺序使奇数位于偶数前面
         // 输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
         // 其中的奇数和奇数，偶数和偶数之间的相对位置不变。意思是假设以奇数作为参考，就相当于把偶数都抽离出去，那么剩下的所有奇数保持之前的先后顺序。
         function reOrderArray(array) {
@@ -336,7 +339,7 @@
         // let array = [1, 2, 3, 4, 5, 6, 7];
         // console.log(reOrderArray(array));
 
-        // TODO: 链表中倒数第k个节点
+        // TODO: 14.链表中倒数第k个节点
         // 思路，假设有n个节点，倒数第k个节点就是从头结点开始的第n-k+1个节点
         function FindKthToTail(head, k) {
             if (head === null || k <= 0) {
@@ -389,7 +392,7 @@
         // list.add(4);
         // console.log(FindKthToTail(list.head,2));
 
-        // TODO: 反转链表
+        // TODO: 15.反转链表
         // 思路，用数组保存链表节点的值下来，然后再用数组的reverse方法，最后再重构链表
         // 更好的方法，就是反转后的头结点变成尾节点，不断遍历，然后头部插入有倒序效果，这样就可以反转了
         // 注意！！！这个反转链表，真的务必注意先后顺序！！！
@@ -415,7 +418,7 @@
         // list.add(4);
         // console.log(ReverseList(list.head));
 
-        // 合并两个排序的链表
+        // TODO: 16.合并两个排序的链表
         function Merge(pHead1, pHead2) {
             // write code here
             if (pHead1 === null) {
@@ -427,7 +430,7 @@
             let curNode2 = pHead2;
             let nullNode = new ListNode(-1); // 创建一个虚拟头部，之后再替换！！！
             nullNode.next = null;
-            let newHead = nullNode; 
+            let newHead = nullNode;
             let tail = newHead; // 合并的新链表，采用尾插法，需要借助tail，指向倒数第一个
             while (curNode1 !== null && curNode2 !== null) {
                 if (curNode1.val <= curNode2.val) {
@@ -480,15 +483,15 @@
                 if (curNode1.val <= curNode2.val) {
                     tail.next = curNode1;
                     curNode1 = curNode1.next;
-                }else{
+                } else {
                     tail.next = curNode2;
                     curNode2 = curNode2.next;
                 }
                 tail = tail.next; // 保证指向尾部
             }
-            if(curNode1 !== null){
+            if (curNode1 !== null) {
                 tail.next = curNode1;
-            }else{
+            } else {
                 tail.next = curNode2;
             }
             newHead = newHead.next;
@@ -507,6 +510,329 @@
         // list2.add(4);
         // list2.add(2);
         // console.log(Merge2(list1.head, list2.head));
+
+        // TODO: 17.树的子结构
+        // 输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+        // 查找A中是否存在树B结构一样的子树，可以分为两步：
+        // 第一步，在树Ａ中找到和树Ｂ的根节点的值一样的节点Ｒ
+        // 第二步，判断Ａ中以Ｒ为根节点的子树是不是包含和树Ｂ一样的结构
+        function HasSubtree(pRoot1, pRoot2) {
+            // 注意！！！外层的函数作用是遍历整颗树，然后每个节点（左右子树和根）进行比对是否存在相同结构
+            // 空树不是任意一个树的子结构     
+            if (pRoot1 === null || pRoot2 === null) {
+                // 首先保证pRoot2不能为空
+                return false;
+            }
+            // 和树的先序遍历一样，先根结点，然后左右子树比对
+            if (isSubTree(pRoot1, pRoot2)) {
+                return true;
+            } else {
+                return isSubTree(pRoot1.left, pRoot2) || isSubTree(pRoot1.right, pRoot2)
+            }
+
+            // 内部函数，内部调用
+            // 此时，pRoot1和pRoot2是拥有相同的父节点
+            // 接着判断Ａ中以Ｒ为根节点的子树是不是包含和树Ｂ一样的结构
+            function isSubTree(pRoot1, pRoot2) {
+                // 这个函数作用是判断两个树结构是否是子父关系
+                if (pRoot2 === null) {
+                    // 其中会涉及子树问题！！！而最外层已经做了pRoot2 === null的限制
+                    // 因为pRoot1>=pRoot2如果树B遍历完，则证明树B全都对上了
+                    // 换句话说，在递归中，默认空节点是符合子树概念的
+                    // 因为递归结构，此为递归结束条件。
+                    return true;
+                }
+                if (pRoot1 === null) {
+                    // 此时是树B未遍历完，而树A已经遍历完，证明树B多于树A，对不上
+                    return false;
+                }
+                // 一样和树的先序遍历一样，先根然后左右子树比对
+                if (pRoot1.val === pRoot2.val) {
+                    // 因为是判断相同的子树结构，所以需要&&
+                    return isSubTree(pRoot1.left, pRoot2.left) && isSubTree(pRoot1.right, pRoot2.right);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+
+        // TODO: 18.二叉树的镜像
+        // 操作给定的二叉树，将其变换为源二叉树的镜像。
+        // 也就是所有的左右子树调换位置
+        // 思路是递归，和先序遍历二叉树一样。注意，其中是概念原树的！！！
+        function Mirror(root) {
+            if (root === null) {
+                return null;
+            }
+            let temp = root.left;
+            root.left = root.right;
+            root.right = temp;
+            // 可以不用判断root.left和root.right，因为进入下一层递归会有判断
+            Mirror(root.left);
+            Mirror(root.right);
+        }
+
+        // TODO: 19.顺时针打印矩阵
+        // 输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字
+        // 这道题的思路，在于判断是否到达边界！！！打印一圈分为4步，用四个while循环并且附带结束条件。
+        function printMatrix(matrix) {
+            // js中的二维数组的表示是，[[],[],[]....]
+            if (!matrix || matrix.length < 1) {
+                return null;
+            }
+            let row_len = matrix.length;
+            let col_len = matrix[0].length;
+            let len = row_len * col_len;
+            let circle = 0; // 代表圈数
+            let i = 0;
+            let j = 0;
+            let result = [];
+            while (1) {
+                // 先从左到右，到达最右边则结束
+                while (j < col_len - circle) {
+                    result.push(matrix[i][j]);
+                    j++;
+                }
+                if (result.length === len) break; // 结束条件
+                j--; // 因为while循环结束时j++越界了。
+                i++; // 从下一个继续。
+                // 从上到下，到达底部结束
+                while (i < row_len - circle) {
+                    result.push(matrix[i][j]);
+                    i++;
+                }
+                if (result.length === len) break; // 结束条件
+                i--;
+                j--;
+                // 从右到左，到达最左边结束
+                while (j >= circle) {
+                    result.push(matrix[i][j]);
+                    j--;
+                }
+                if (result.length === len) break; // 结束条件
+                j++;
+                i--;
+                circle++; // 注意！！！下一次从下到上，已经受到第一次影响了，所以圈数提前+1
+                // 从下到上，到达最上面结束
+                while (i >= circle) {
+                    result.push(matrix[i][j]);
+                    i--;
+                }
+                if (result.length === len) break; // 结束条件
+                i++;
+                j++;
+            }
+            return result;
+        }
+
+        // TODO: 20.包含min函数的栈
+        // 定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数（时间复杂度应为O（1））。
+        // 注意：保证测试中不会当栈为空的时候，对栈调用pop()或者min()或者top()方法。
+        function Stack20() { // 可以理解外层套一个类，类里面有自己的数据和方法！
+            // 把内容放入
+            let stack = []; // 对于这种题，虽说是让我们实现方法，但是前提还是需要先定义一个栈！！！
+            let minStack = []; // 思路，用空间换时间，多定义一个和原栈相对应的栈，用于保存最小值。
+            function push(node) {
+                if (node <= minStack[minStack.length - 1] || minStack.length === 0) {
+                    // 注意，就算和min的栈顶相同也要入栈，这样保证出栈一致性
+                    minStack.push(node);
+                }
+                stack.push(node);
+            }
+            function pop() {
+                let node = stack.pop();
+                if (node === minStack[minStack.length - 1]) {
+                    minStack.pop();
+                }
+                return node; // 如果是空数组，也就返回undifined
+            }
+            function top1() {
+                return stack[stack.length - 1];
+            }
+            function min() {
+                // 时间复杂度应为O（1）
+                return minStack[minStack.length - 1];
+            }
+            push(1);
+            push(2);
+            push(1);
+            push(1);
+            console.log(stack);
+            console.log(minStack);
+        }
+        // Stack20();
+
+        // TODO: 21.栈的压入、弹出序列
+        // 序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列
+        // 思路即是模拟栈的压入和弹出！！！
+        function IsPopOrder(pushV, popV) {
+            let j = 0;
+            let stack = [];
+            for (let i = 0; i < pushV.length; i++) {
+                // 边入栈，边出栈！
+                stack.push(pushV[i]);
+                while (stack.length > 0 && stack[stack.length - 1] === popV[j]) {
+                    j++;
+                    stack.pop();
+                }
+            }
+            // 因为两个序列的长度是相等的，如果符合则全部出栈
+            return stack.length === 0;
+        }
+
+        // TODO: 22.从上往下打印二叉树
+        // 其实就是层次遍历（广度优先遍历breadth first traversal）二叉树，用队列。
+        // 过程是父节点出队，然后左右子树入队。结束条件是全部出队
+        function PrintFromTopToBottom(root) {
+            if (root === null) {
+                return [];
+            }
+            let queue = [];
+            let result = [];
+            queue.push(root);
+            while (queue.length > 0) {
+                let node = queue.shift();
+                result.push(node.val);
+                if (node.left !== null) {
+                    queue.push(node.left);
+                }
+                if (node.right !== null) {
+                    queue.push(node.right);
+                }
+            }
+            console.log(result);
+            return result;
+        }
+        // let tree = new Tree();
+        // tree.add(4);
+        // tree.add(2);
+        // tree.add(5);
+        // tree.add(1);
+        // tree.add(3);
+        // tree.add(6);
+        // console.log(tree.root);
+        // PrintFromTopToBottom(tree.root);
+
+        // TODO: 23.二叉搜索树的后序遍历序列
+        // 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。
+        // 后序遍历的规则是左右子树再到根。
+        // 注意：测试用例用的是 false/true, 不是题目中的 'Yes'/'No'
+        // 思路，需要用到一个递归。数组的末位是根结点，然后根据根结点分左右子树，分边后判断右子树有没有大于根结点的
+        function VerifySquenceOfBST(sequence) {
+            // write code here
+            if (sequence.length <= 0) {
+                return false;
+            }
+            return adjustSequence(0, sequence.length - 1);
+            // 利用递归，先中后序遍历的结果都可以用递归倒带。
+            function adjustSequence(start, end) {
+                // 参数是数组的首尾下标
+                // 递归结束条件，开始和结尾相同，代表最后递归到只剩一个元素，则返回真
+                if (start >= end) {
+                    return true;
+                }
+                let root = sequence[end];
+                // 根据root进行分边！！！！
+                for (var i = start; i < end && sequence[i] < root; i++);
+                // 注意，这里的i需要被外部调用，所有用var
+                let rightIndex = i; // 分边，此时为右子树的初始
+                for (var i = rightIndex + 1; i < end; i++) {
+                    if (sequence[i] < root) {
+                        return false;
+                    }
+                }
+                return adjustSequence(start, rightIndex - 1) && adjustSequence(rightIndex, end - 1);
+            }
+        }
+        // let sequence = [2,5,4];
+        // console.log(VerifySquenceOfBST(sequence));
+
+        // TODO: 24.二叉树中和为某一值的路径
+        // DFS题目，也可以看做是先序遍历的题目 ,在二叉树中，dfs就相当于先序遍历
+        // 思路是，利用加法，当在叶子结点的时候达到对应的数值，则把当前的路径保存到result中。
+        // 注意！！！！递归函数写在函数内的好处是，递归函数在函数内调用，可以共用变量。
+        function FindPath(root, expectNumber) {
+            // write code here
+            if (root === null) {
+                return [];
+            }
+            let result = [];
+            let path = [];
+            let sum = 0;
+            // 对象是指针传值，会在递归中改变，但是普通类型就不会就不会
+            dfs(root, sum, result, path, expectNumber);
+            return result;
+        }
+        // 注意，递归中的参数，是用于保存变量的。
+        // 其中的逻辑是每一次递归，都是先添加当前节点，然后判断是否叶子结点和sum是否符合，符合就保存当前路径，并且也要出栈，这样才能保证路径回溯。接着进入下一层递归。而最后递归结束路径一定要出栈，保证路径回溯
+        // 正是因为路径path对于每个结点push和pop才保证了路径的完整性
+        function dfs(root, sum, result, path, expectNumber) {
+            // 先添加根结点到路径中
+            path.push(root.val);
+            sum += root.val; // 先加，之后再减去
+            if (root.left === null && root.right === null && sum === expectNumber) {
+                // 叶子结点，总和加起来等于对应的值，则证明该路径符合要求
+                result.push(path.concat()); // 注意！！！这里需要获取当前路径的拷贝。因为该路径还要回溯寻找下一个可行路径。
+                path.pop(); // ！！！！！！注意，这里不能return;因为找到了新的路径，需要回退pop()!!!!
+                return; // 结束当前递归
+            }
+            if (sum > expectNumber) {
+                // 直接回退，无需继续
+                path.pop();
+                return;
+            }
+            // 否则继续递归寻找
+            if (root.left !== null) {
+                dfs(root.left, sum, result, path, expectNumber);
+            }
+            if (root.right !== null) {
+                dfs(root.right, sum, result, path, expectNumber);
+            }
+            // 最后回退当前的路径
+            path.pop();
+            // 注意了！！！这里的sum是不需要再减回去，因为每一层迭代，都附带特定的sum
+            // sum -= root.val;
+            return;
+        }
+        let tree = new Tree();
+        tree.add(10);
+        tree.add(5);
+        tree.add(12);
+        tree.add(4);
+        tree.add(7);
+        // tree.add(6);
+        console.log(FindPath(tree.root, 22));
+        // 方法二，把递归方法放入函数中，可以省去数据的传输
+        function FindPath2(root, expectNumber) {
+            var temp = [];
+            // var found = false;
+            var result = [];
+            dfs(root, 0);
+            return result;
+            // 这里可以省去递归中的数据传输
+            function dfs(root, sum) {
+                // debugger;s
+                if (!root) {
+                    return;
+                }
+                temp.push(root.val);
+                sum += root.val;
+                if (!root.left && !root.right && sum === expectNumber) {
+                    result.push(temp.concat());
+                }
+                if (root.left) {
+                    dfs(root.left, sum);
+                }
+                if (root.right) {
+                    dfs(root.right, sum);
+                }
+                temp.pop();
+                return;
+            }
+        }
+        console.log(FindPath2(tree.root, 22));
+
     </script>
 </body>
 
