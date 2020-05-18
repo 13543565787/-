@@ -2,7 +2,7 @@
  * @Autor: hjz
  * @Date: 2020-05-13 12:01:57
  * @LastEditors: hjz
- * @LastEditTime: 2020-05-17 00:38:02
+ * @LastEditTime: 2020-05-18 23:44:14
  * @Description: 剑指offer
  -->
 <!DOCTYPE html>
@@ -795,14 +795,14 @@
             // sum -= root.val;
             return;
         }
-        let tree = new Tree();
-        tree.add(10);
-        tree.add(5);
-        tree.add(12);
-        tree.add(4);
-        tree.add(7);
+        // let tree = new Tree();
+        // tree.add(10);
+        // tree.add(5);
+        // tree.add(12);
+        // tree.add(4);
+        // tree.add(7);
         // tree.add(6);
-        console.log(FindPath(tree.root, 22));
+        // console.log(FindPath(tree.root, 22));
         // 方法二，把递归方法放入函数中，可以省去数据的传输
         function FindPath2(root, expectNumber) {
             var temp = [];
@@ -831,7 +831,365 @@
                 return;
             }
         }
-        console.log(FindPath2(tree.root, 22));
+        // console.log(FindPath2(tree.root, 22));
+        // 方法三，减法
+        function FindPath(root, expectNumber) {
+            const list = [],
+                listAll = [];
+            return findpath(root, expectNumber, list, listAll);
+        }
+        function findpath(root, expectNumber, list, listAll) {
+            if (root === null) {
+                return listAll;
+            }
+            list.push(root.val);
+            const x = expectNumber - root.val;
+            if (root.left === null && root.right === null && x === 0) {
+                listAll.push(Array.of(...list));
+            }
+            findpath(root.left, x, list, listAll);
+            findpath(root.right, x, list, listAll);
+            list.pop();
+            return listAll;
+        }
+
+        // TODO: 25.复杂链表的复制
+        // 输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针random指向一个随机节点），请对此链表进行深拷贝，并返回拷贝后的头结点。
+        // 其关键在于这个random指针。
+
+        // 关于Map
+        function MapClass() {
+            // 1，js创建map对象
+            var map = new Map();
+            // 2.将键值对放入map对象。map.set("key", value)
+            let value = [1, 2, 3];
+            map.set("key", value)
+            map.set("key2", value)
+            // 3.根据key获取map值。map.get(key)
+            let key = "key";
+            map.get(key);
+            console.log(map.get(key));
+            // 4.删除map指定对象。map.delete(key);
+            map.delete(key);
+            // 5.循环遍历map
+            value[2] = '11213';
+            map.forEach(function (item, index) {
+                console.log("key", index)  //输出的是map中的value值
+                console.log("value", item)  //输出的是map中的value值
+            })
+        }
+        // MapClass();
+        function RandomListNode(v) {
+            this.label = v;
+            this.next = null;
+            this.random = null;
+        }
+        function RandomLinkList() {
+            this.head = null;
+            this.add = function (v) {
+                let node = new RandomListNode(v);
+                node.next = this.head;
+                node.random = node; // 就指向自己！这样会有个自循环。
+                this.head = node;
+            }
+        }
+        // 方法一，标准的链表拷贝。（此方法无法解决random的深度复制）
+        function Clone(pHead) {
+            if (pHead === null) {
+                return null;
+            }
+            let p = pHead;
+            let p2 = new RandomListNode(pHead.label);
+            p2.random = p.random;
+            const reHead = p2;
+            while (p !== null) {
+                // 这种是在循环中直接赋值下一个节点的内容，然后在下移！！！循环的条件则是当前节点不为空
+                if (p.next !== null) {
+                    p2.next = new RandomListNode(p.next.label);
+                    p2.next.random = p.next.random;
+                } else {
+                    p2.next = null;
+                }
+                p = p.next;
+                p2 = p2.next;
+            }
+            return reHead;
+        }
+        // 方法二，递归复制（此方法无法解决random的深度复制）
+        function Clone2(pHead) {
+            if (!pHead) {
+                return null;
+            }
+            var head = new RandomListNode(pHead.label);
+            head.random = pHead.random;
+            head.next = Clone(pHead.next);
+            return head;
+        }
+        // 思路，相当于在创立一个副本！！！！！在第一次复制链表的时候，用map的key value来保存新旧链表的结点对应。最后在第二次的时候把random补上。
+        // 注意，在map中引用类型还是指针来的，会被改动的
+        function Clone3(pHead) {
+            if (pHead === null) {
+                return null;
+            }
+            let p = pHead;
+            let p2 = new RandomListNode(pHead.label);
+            const reHead = p2;
+            const map = new Map();
+            map.set(p, p2); // 利用键值对，保存对应结点的副本！！！如(A,A'),(B,B'),因为AB是指针，会中途改变。所以最后变成(A-B-C-D...,A'-B'-C'-D'...);
+            while (p !== null) {
+                if (p.next !== null) {
+                    p2.next = new RandomListNode(p.next.label);
+                } else {
+                    p2.next = null; // 结束
+                }
+                // 各自移动一个单位，走到对应的位置
+                p = p.next;
+                p2 = p2.next;
+                // 用map保存对应的结点
+                map.set(p, p2);
+            }
+            // 第二次遍历，利用map把random补上
+            p = pHead;
+            p2 = reHead;
+            while (p !== null) {
+                p2.random = map.get(p.random); // 相当于找到对应的副本
+                p = p.next;
+                p2 = p2.next;
+            }
+            return reHead;
+        }
+        function Clone4(pHead) {
+            cloneNodes(pHead);
+            connectRandom(pHead);
+            return reconnectNodes(pHead);
+        }
+        function cloneNodes(pHead) {
+            // 复制链表，A-A'-B-B'....
+            let pNode = pHead;
+            while (pNode !== null) {
+                const newNode = new RandomListNode(pNode.label);
+                newNode.next = pNode.next;
+                pNode.next = newNode;
+                pNode = newNode.next;
+            }
+        }
+        function connectRandom(pHead) {
+            // 设置random指针
+            let pNode = pHead;
+            while (pNode !== null) {
+                if (pNode.random !== null) {
+                    pNode.next.random = pNode.random.next;
+                }
+                pNode = pNode.next.next;
+            }
+        }
+        function reconnectNodes(pHead) {
+            // 拆开链表
+            let pNode = pHead;
+            let newNodeHead = null,
+                newNode = null;
+            if (pNode !== null) {
+                newNodeHead = newNode = pNode.next;
+                pNode.next = newNode.next;
+                pNode = newNode.next;
+            }
+            while (pNode !== null) {
+                newNode.next = pNode.next;
+                newNode = newNode.next;
+                pNode.next = newNode.next;
+                pNode = pNode.next;
+            }
+            return newNodeHead;
+        }
+
+
+        // let list1 = new RandomLinkList();
+        // list1.add(7);
+        // list1.add(5);
+        // list1.add(3);
+        // list1.add(1);
+        // console.log(list1);
+        // console.log(Clone(list1.head));
+        // console.log(Clone2(list1.head));
+        // console.log(Clone3(list1.head));
+        // console.log(Clone4(list1.head));
+        // 改变原链表
+        // list1.head.next.next.label = 444;
+        // console.log(list1.head.next.next.label);
+
+        // TODO: 26.二叉搜索树与双向链表
+        // 输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+        // 因为二叉树是左大右小，而一个排序好的的双向链表也就是二叉树从最左到最右的序列！！！
+        // 换个思路，也就是将二叉树变成一个有序的链表，对于二叉树从小到大也就是树从左到右
+        function Convert(pRootOfTree) {
+            if (pRootOfTree === null) {
+                return null;
+            }
+            let pLast = null; // 初始化的时候，对于根结点是没有父节点的，所以为null
+            pLast = ConvertNode(pRootOfTree, pLast);
+            let head = pLast;
+            // 从尾节点寻根找到最前面的头结点
+            while (head && head.left !== null) {
+                head = head.left;
+            }
+            return head;
+        }
+        // 因为中序遍历才能从小到大，所以需要递归，
+        // 使用递归。对于一个抽离出来的结点。根结点的pre指向左子树，next指向右子树。而左子树的next指向根，右子树的pre指向根结点
+        // 将左子树构成双向链表，返回的是左子树的尾结点，将其连接到root的左边；将右子树构成双向链表，将其追加到root结点之后，并返回尾结点；
+        // 之所以递归返回尾节点，是为了更好的拼接在根结点的左边。对于右子树的东西，直接连接到根结点之后即可。但最后还是要返回尾节点。
+        // 函数最后返回当前树转化为双向链表的最后非空结点
+        // 入参node为当前树的父节点，注意！！！这里需要增加多一个参数，用来保存当前节点对应的上一个节点的pLast
+        function ConvertNode(node, pLast) {
+            if (node === null) {
+                return null;
+            }
+            // 将左子树构成双向链表，返回的是左子树的尾结点，将其连接到root的左边；
+            if (node.left) {
+                // 如果存在左节点，则需要更新pLast，用于下一层
+                // 注意！！！！在存在左节点的时候，是不影响上一层的最后一个尾节点，所以pLast需要安搬不动传给下一层递归。
+                // 如右左结构（4-7-6-5），左子树中的n个左子树，最后还是要指向父节点的！！！！也就是最后5要指向4！！
+                pLast = ConvertNode(node.left, pLast);
+            }
+            node.left = pLast; // 如果有新的左子树则使用新的左子树的尾节点，如果没有左子树，就采用上一层的尾节点
+            if (pLast !== null) {
+                // 如果是空节点，就不能指向当前node！主要是leftLast.right会报错！
+                pLast.right = node; // 完成左子树的拼接
+            }
+            // 将右子树构成双向链表，将其追加到root结点之后，并返回尾结点；
+            pLast = node; // 更新pLast。在递归右子树的时候，对于右子树而言当前层的最后一个节点是父节点。
+            let rightLast = null;
+            if (node.right) {
+                rightLast = ConvertNode(node.right, pLast);
+            }
+            if (rightLast === null) {
+                return node; // 如果右子树不存在，则当前树最后一个结点就是父节点
+            } else {
+                return rightLast;
+            }
+        }
+        // 简写
+        function ConvertNode2(node, pLast) {
+            if (!node) {
+                return null;
+            }
+            if (node.left) {
+                pLast = ConvertNode(node.left, pLast);
+            }
+            node.left = pLast;
+            if (pLast) {
+                pLast.right = node;
+            }
+            pLast = node;
+            if (node.right) {
+                // pLast = ConvertNode(node.right,node);
+                pLast = ConvertNode(node.right, pLast);
+            }
+            return pLast;
+        }
+        // 简写
+        function Convert2(pRootOfTree) {
+            if (!pRootOfTree) {
+                return null;
+            }
+            var lastNode = null;
+            lastNode = ConvertNode(pRootOfTree);
+            var head = lastNode;
+            while (head && head.left) {
+                head = head.left;
+            }
+            return head;
+            function ConvertNode(node) {
+                if (!node) {
+                    return;
+                }
+                if (node.left) {
+                    lastNode = ConvertNode(node.left);
+                }
+                node.left = lastNode;
+                if (lastNode) {
+                    lastNode.right = node;
+                }
+                lastNode = node;
+                if (node.right) {
+                    lastNode = ConvertNode(node.right);
+                }
+                return lastNode;
+            }
+        }
+        // let tree = new Tree();
+        // tree.add(4);
+        // tree.add(2);
+        // tree.add(5);
+        // tree.add(1);
+        // tree.add(3);
+        // tree.add(6);
+
+        // tree.add(4);
+        // tree.add(6);
+        // tree.add(5);
+        // console.log(tree.root);
+        // console.log(Convert2(tree.root));
+
+        // TODO: 字符串的排列
+        // 输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。同时也需要去重
+        // 这是一个全排列，时间复杂度自然也是n!。
+        // 其思路就是填空格，比如ABC，第一个位置则可以从ABC中选取一个，第二个位置则需要去掉第一个空的字符，然后选择一个，最后一个位置则只能填剩余的唯一一个。
+        function Permutation(str) {
+            // write code here
+            if (str.length <= 0) {
+                return [];
+            }
+            let res = [];
+            let strArr = str.split("");
+            let curStr = '';
+            res = Permutate(strArr, curStr, res);
+
+            return res;
+        }
+        // 参数arr是需要组合的字符数组；curStr和res就类似之前的path和pathAll一样。curStr指的是当前组合的字符串，而res则是所有的字符组合。
+        // 过程是，取出当前arr中的第i个字符s，然后从arr中删除s，在剩余的arr中继续递归。
+        // 此递归比较特殊，是在循环中递归，所以时间复杂度也是n!。在循环中变更状态然后给到下一层递归，然后恢复原来的状态继续循环进行下一次递归。每次递归的结束，就是一个组合的完成，保存下来最后返回。
+        function Permutate(arr, curStr, res) {
+            if (arr.length === 0) {
+                // 证明已经遍历完
+                res.push(curStr);
+                return res;
+            }
+            let set = new Set();
+            for (let i = 0; i < arr.length; i++) {
+                let char = arr[i];
+                if (set.has(char)) {
+                    // 需要进行预处理，相同字符不需要重复，比如abb',和ab'b是一样的！！
+                    continue;
+                }
+                set.add(char);
+                arr.splice(i, 1); // 删掉下标为i的字符
+                curStr += char; // 组合中新增当前字符
+                Permutate(arr, curStr, res); // 进入下一层递归。
+                // 接下来还原数组，还原数组的目的在于下一次for循环。
+                curStr = curStr.slice(0, curStr.length - 1); // 恢复字符串
+                arr.splice(i, 0, char);
+            }
+            return res;
+        }
+
+        // 关于Set
+        function _Set() {
+            let set = new Set();
+            // add()增   delete ()删   has()查
+            // 转化为数组[...new Set([1,2,3,4,5])]
+        }
+
+
+
+        let str = 'aabc';
+        console.log(Permutation(str));
+        let arr = [1, 2, 3];
+        arr.splice(0, 1);
+        console.log(arr);
+        arr.splice(0, 0, 1);
+        console.log(arr);
 
     </script>
 </body>
