@@ -2,7 +2,7 @@
  * @Autor: hjz
  * @Date: 2020-05-13 12:01:57
  * @LastEditors: hjz
- * @LastEditTime: 2020-05-25 17:44:41
+ * @LastEditTime: 2020-06-05 10:52:36
  * @Description: 剑指offer
  -->
 <!DOCTYPE html>
@@ -218,6 +218,32 @@
             console.log(pop());
         }
         // Stack5();
+        // 方法2
+        function Stack5_2() {
+            let inStack = [];
+            let outStack = [];
+            function push(node) {
+                // 第一个栈专门入栈
+                inStack.push(node);
+            }
+            function pop() {
+                // 如果第二个栈没有值，就把第一个栈压到第二个栈
+                if (!outStack.length) {
+                    while (inStack.length) {
+                        outStack.push(inStack.pop());
+                    }
+                }
+                return outStack.pop();
+            }
+            push(1);
+            push(2);
+            push(3);
+            push(4);
+            console.log(pop());
+            console.log(pop());
+            console.log(pop());
+            console.log(pop());
+        }
 
         // TODO: 6.旋转数组的最小数字
         // 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
@@ -527,40 +553,37 @@
             if (isSubTree(pRoot1, pRoot2)) {
                 return true;
             } else {
-                return isSubTree(pRoot1.left, pRoot2) || isSubTree(pRoot1.right, pRoot2)
+                return HasSubtree(pRoot1.left, pRoot2) || HasSubtree(pRoot1.right, pRoot2)
             }
-
-            // 内部函数，内部调用
-            // 此时，pRoot1和pRoot2是拥有相同的父节点
-            // 接着判断Ａ中以Ｒ为根节点的子树是不是包含和树Ｂ一样的结构
-            function isSubTree(pRoot1, pRoot2) {
-                // 这个函数作用是判断两个树结构是否是子父关系
-                if (pRoot2 === null) {
-                    // 其中会涉及子树问题！！！而最外层已经做了pRoot2 === null的限制
-                    // 因为pRoot1>=pRoot2如果树B遍历完，则证明树B全都对上了
-                    // 换句话说，在递归中，默认空节点是符合子树概念的
-                    // 因为递归结构，此为递归结束条件。
-                    return true;
-                }
-                if (pRoot1 === null) {
-                    // 此时是树B未遍历完，而树A已经遍历完，证明树B多于树A，对不上
-                    return false;
-                }
-                // 一样和树的先序遍历一样，先根然后左右子树比对
-                if (pRoot1.val === pRoot2.val) {
-                    // 因为是判断相同的子树结构，所以需要&&
-                    return isSubTree(pRoot1.left, pRoot2.left) && isSubTree(pRoot1.right, pRoot2.right);
-                } else {
-                    return false;
-                }
+        }
+        // 此时，pRoot1和pRoot2是拥有相同的父节点
+        // 接着判断Ａ中以Ｒ为根节点的子树是不是包含和树Ｂ一样的结构
+        function isSubTree(pRoot1, pRoot2) {
+            // 这个函数作用是判断两个树结构是否是子父关系
+            if (pRoot2 === null) {
+                // 其中会涉及子树问题！！！而最外层已经做了pRoot2 === null的限制
+                // 因为pRoot1>=pRoot2如果树B遍历完，则证明树B全都对上了
+                // 换句话说，在递归中，默认空节点是符合子树概念的
+                // 因为递归结构，此为递归结束条件。
+                return true;
+            }
+            if (pRoot1 === null) {
+                // 此时是树B未遍历完，而树A已经遍历完，证明树B多于树A，对不上
+                return false;
+            }
+            // 一样和树的先序遍历一样，先根然后左右子树比对
+            if (pRoot1.val === pRoot2.val) {
+                // 因为是判断相同的子树结构，所以需要&&
+                return isSubTree(pRoot1.left, pRoot2.left) && isSubTree(pRoot1.right, pRoot2.right);
+            } else {
+                return false;
             }
         }
 
-
         // TODO: 18.二叉树的镜像
         // 操作给定的二叉树，将其变换为源二叉树的镜像。
-        // 也就是所有的左右子树调换位置
-        // 思路是递归，和先序遍历二叉树一样。注意，其中是概念原树的！！！
+        // 单从一个简单二叉树来看，也就是所有的左右子树调换位置
+        // 思路是递归，和先序遍历二叉树一样。注意，其中是改变原树的！！！
         function Mirror(root) {
             if (root === null) {
                 return null;
@@ -701,7 +724,6 @@
                     queue.push(node.right);
                 }
             }
-            console.log(result);
             return result;
         }
         // let tree = new Tree();
@@ -726,6 +748,7 @@
             }
             return adjustSequence(0, sequence.length - 1);
             // 利用递归，先中后序遍历的结果都可以用递归倒带。
+            // 利用指针进行获取数组中的值
             function adjustSequence(start, end) {
                 // 参数是数组的首尾下标
                 // 递归结束条件，开始和结尾相同，代表最后递归到只剩一个元素，则返回真
@@ -737,7 +760,7 @@
                 for (var i = start; i < end && sequence[i] < root; i++);
                 // 注意，这里的i需要被外部调用，所有用var
                 let rightIndex = i; // 分边，此时为右子树的初始
-                for (var i = rightIndex + 1; i < end; i++) {
+                for (var i = rightIndex + 1; i < end; i++) { // 这里的+1是因为rightIndex已经证明是大于root了，所以从下一个开始
                     if (sequence[i] < root) {
                         return false;
                     }
@@ -1048,7 +1071,6 @@
             if (node.left) {
                 // 如果存在左节点，则需要更新pLast，用于下一层
                 // 注意！！！！在存在左节点的时候，是不影响上一层的最后一个尾节点，所以pLast需要安搬不动传给下一层递归。
-                // 如右左结构（4-7-6-5），左子树中的n个左子树，最后还是要指向父节点的！！！！也就是最后5要指向4！！
                 pLast = ConvertNode(node.left, pLast);
             }
             node.left = pLast; // 如果有新的左子树则使用新的左子树的尾节点，如果没有左子树，就采用上一层的尾节点
@@ -1057,6 +1079,7 @@
                 pLast.right = node; // 完成左子树的拼接
             }
             // 将右子树构成双向链表，将其追加到root结点之后，并返回尾结点；
+            // 如右左结构（4-7-6-5），左子树中的n个左子树，最后还是要指向父节点的！！！！也就是最后5要指向4！！
             pLast = node; // 更新pLast。在递归右子树的时候，对于右子树而言当前层的最后一个节点是父节点。
             let rightLast = null;
             if (node.right) {
@@ -1131,7 +1154,7 @@
         // console.log(tree.root);
         // console.log(Convert2(tree.root));
 
-        // TODO: 字符串的排列
+        // TODO: 27.字符串的排列
         // 输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。同时也需要去重
         // 这是一个全排列，时间复杂度自然也是n!。
         // 其思路就是填空格，比如ABC，第一个位置则可以从ABC中选取一个，第二个位置则需要去掉第一个空的字符，然后选择一个，最后一个位置则只能填剩余的唯一一个。
@@ -1541,6 +1564,7 @@
             if (Math.abs(left - right) > 1) {
                 return false;
             }
+            // 也许当前层符合高度差不大于1，但子树未必满足，所以需要层层递归去查看
             return IsBalanced_Solution(pRoot.left) || IsBalanced_Solution(pRoot.right)
         }
 
@@ -1658,7 +1682,6 @@
             let arr = str.split(" ");
             arr.reverse();
             return arr.join(" ");
-            // write code here
         }
 
         // TODO: 45.扑克牌顺子
@@ -1729,7 +1752,7 @@
         }
         // console.log(LastRemaining_Solution(5,3));
 
-        // TODO: 47.求n的阶层
+        // TODO: 47.求1+2+3+...+n
         // 不得使用循环
         function Sum_Solution(n) {
             // write code here
@@ -1768,7 +1791,7 @@
             if (!str || str.length <= 0) {
                 return 0;
             }
-            let flag = 1; // 负数为true，
+            let flag = 1; // 代表符号，到时用来乘
             let index = 0; // 判读有没有符号，有符号就下一个获取数值
             if (str[0] === '+' || str[0] === '-') {
                 index = 1; // 从下一个位置开始判断
@@ -2076,7 +2099,6 @@
                 }
                 if (node.right) {
                     queue.push(node.right);
-
                 }
             }
             return re;
@@ -2407,7 +2429,7 @@
         function cutRope(number) {
             // 因为m、n都是整数，n>1并且m>1，也就是必须切！！！！
             // 在前三个的时候，一开始是切，但涉及后续的，就可以不切开了！！！
-            if(number<2){
+            if (number < 2) {
                 return 0;
             }
             if (number === 2) {
