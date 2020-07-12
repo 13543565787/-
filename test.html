@@ -1,0 +1,59 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-07-03 21:41:03
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-07-03 21:59:07
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // console.log(1);
+        // setTimeout(function(){
+        //     console.log(111);
+        //     new Promise((resolve,reject)=>{
+        //         console.log(2);
+        //         resolve();
+        //     }).then(()=>{
+        //         console.log(4);
+        //     })
+        // },0);
+        // setTimeout(function(){
+        //     console.log(222);
+        //     new Promise((resolve,reject)=>{
+        //         console.log(3);
+        //         resolve();
+        //     }).then(()=>{
+        //         console.log(5);
+        //     })
+        // },0);
+        // console.log(6);
+        console.log("start");
+        setTimeout(() => {
+            console.log("111");
+        }, 0);
+        new Promise((resolve)=>{
+            console.log(1);
+            resolve();
+            setTimeout(()=>{
+                console.log("timeout2",0);
+            })
+        }).then(()=>{
+            console.log("then2");
+        })
+        setTimeout(() => {
+            console.log("22222");
+        }, 0);
+        console.log("end");
+    </script>
+</body>
+
+</html>

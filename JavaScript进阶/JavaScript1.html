@@ -1,0 +1,554 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-06-18 14:43:58
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-06-23 12:07:07
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        // TODO: 数据类型
+        // typeof
+        // console.log(typeof(function (){}));
+        // console.log(typeof({}));
+        // console.log(typeof(null));
+        // console.log(typeof([]));
+        // console.log(typeof(false));
+        // console.log(typeof(undefined));
+        // console.log(typeof('undefined'));
+
+        // instanceof
+        // console.log({} instanceof Object );
+        // console.log({} instanceof Array );
+        // console.log([] instanceof Array );
+        // console.log([] instanceof Object );
+
+        // Object.prototype.toString()
+        // console.log(Object.prototype.toString.call({}));
+        // console.log(Object.prototype.toString.call([]));
+        // console.log(Object.prototype.toString.call(function(){}));
+        // console.log(Object.prototype.toString.call("123"));
+        // console.log(Object.prototype.toString.call(JSON));
+
+
+        // console.log(isNaN('A String'));
+        // console.log(null == undefined);
+        // console.log(null == false);
+
+        // console.log('123'>4);
+        // console.log(true>false);
+
+        // console.log(String(null) === 'null');
+
+        // console.log('123' - '123');
+        // console.log('123' -0);
+
+        // TODO: this
+
+        // let aaa = '123';
+        // function fn(){
+        //     console.log(this.aaa);
+        //     console.log(this);
+        // }
+        // fn();
+        // // console.log(this == window);
+        // console.log(this);
+
+        // let job = 'frontend';
+        // console.log(window.job === job);   // false
+
+        // var b = '123';
+        // function fn(){
+        //     console.log(b);
+        //     var b = '222';
+        //     console.log(b);
+        // }
+        // fn();
+
+
+        // let obj = {
+        //     aaa: '123',
+        //     fn: function fn() {
+        //         console.log(this.aaa);
+        //     }
+        // }
+        // let obj2 = {
+        //     aaa: '333', 
+        //     fn: function fn() {
+        //         console.log(this.aaa);
+        //     }
+        // };
+        // obj.fn();
+        // obj2.fn();
+        // obj.fn.call(obj2);
+
+
+        // let obj = {
+        //     aaa: '123',
+        //     fn: function () {
+        //         return function () {
+        //             return this.aaa;
+        //         }
+        //     }
+        // }
+        // console.log(obj.fn()());
+        // console.log(obj.fn().call(obj));
+        // let obj2 = {
+        //     aaa: '123',
+        //     fn: function () {
+        //         let that = this;
+        //         return function () {
+        //             return that.aaa;
+        //         }
+        //     }
+        // }
+        // console.log(obj2.fn()());
+
+
+        // function Fn() {
+        //     this.aaa = '123';
+        // }
+        // let f = new Fn();
+        // console.log(f.aaa);
+
+
+        // TODO: bind的实现
+        // let obj = {
+        //     aaa: '123',
+        //     fn: function fn() {
+        //         console.log(this.aaa);
+        //     }
+        // }
+        // let obj2 = {
+        //     aaa: '333',
+        // };
+        // Function.prototype.bind2 = function (ctx) {
+        //     console.log(this); 
+        //     console.log(ctx); 
+        //     let fn = this;
+        //     return function(){
+        //         console.log({arguments});
+        //         fn.apply(ctx,arguments);
+        //     }
+        // }
+        // obj.fn.bind2(obj2)(1,2,3);
+
+        // TODO: 原型链
+        // function fn(){
+        //     console.log("!!!");
+        // }
+        // console.log(fn.prototype);
+
+        // function Person(name, age) {
+        //     this.name = name;
+        //     this.age = age;
+        // }
+        // // 方法直接写在原型上
+        // Person.prototype.getName = function(){
+        //     return this.name;
+        // }
+        // let p1 = new Person('xxx','30');
+        // console.log(p1.getName());
+        // console.log(Person.prototype.constructor === Person);  //true
+        // console.log(p1.__proto__ === Person.prototype);
+        // console.log(p1.constructor === Person);
+
+
+        // TODO: 继承
+        // 原型链继承
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+            this.play = [1, 2, 3];
+            this.getAge = function () {
+                console.log(this.age);
+            };
+        }
+        Person.prototype.setName = function (name) {
+            this.name = name;
+        }
+        function Student(grade) {
+            this.grade = grade;
+        }
+        Student.prototype = new Person();// 子类型的原型为父类型的一个实例对象
+        // let s1 = new Student(1);
+        // let s2 = new Student(2);
+        // console.log(s1, s2);
+        // s1.play.push(4);
+        // console.log(s1, s2);
+        // s1.setName('aaa');
+        // console.log(s1, s2);
+
+        // 借用构造函数继承
+        function Student2(name, age, grade) {
+            Person.call(this, name, age); // 相当于this.name = name;this.age = age;
+            this.grade = grade;
+        }
+        // let student2 = new Student2('xxx','30',1);
+        // console.log(student2);
+        // console.log(student2.play);
+        // // console.log(student2.setName('aaa'));
+
+        // 原型链+借用构造函数的组合继承
+        function Student3(name, age, grade) {
+            Person.call(this, name, age);
+            this.grade = grade;
+        }
+        Student3.prototype = new Person(); // 原型链继承
+        Student3.prototype.constructor = Student3; // 需要修复原型上构造函数的指向
+        Student3.prototype.sayHello = function () { };
+        // let student3 = new Student3('xxx','30',1);
+        // console.log(student3);
+
+        // 组合继承优化1
+        function Student4(name, age, grade) {
+            Person.call(this, name, age);
+            this.grade = grade;
+        }
+        Student4.prototype = Person.prototype; // 因为已经执行过一次Person的构造函数，Person内的方法和属性已经都有了。只需要继承Person的原型即可
+        Student4.prototype.sayHello = function () { };
+        // let student4 = new Student4('xxx',30,1);
+        // console.log(student4);
+        // console.log(student4 instanceof Student4,student4 instanceof Person); // true,true
+        // console.log(student4.constructor); // Person
+
+        // 组合继承优化2
+        function Student5(name, age, grade) {
+            Person.call(this, name, age); // 还是需要借用构造函数
+            this.grade = grade;
+        }
+        Person.prototype.job = [1, 2, 3];
+        Student5.prototype = Object.create(Person.prototype); // 核心代码，注意，这里只需要获取Person的原型，无需Person本身
+        Student5.prototype.constructor = Student5; // 核心代码
+        // let student5 = new Student5('xxx',30,1);
+        // let student5_2 = new Student5('xxx',30,1);
+        // student5.job.push(4);
+        // student5.play.push(4);
+        // console.log(student5,student5_2); // 注意，Person原型上的job属性，是被共享的！一改都改变了！！
+        // console.log(student5.setName('aaa'));
+
+        // class
+        class Person2 {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            showName() { // 注意，class内的方法是写在Person2.prototype原型链上的！
+                console.log("调用父类方法", this.name);
+            }
+        }
+        let p = new Person2('xxx', 30);
+        class Student6 extends Person2 {
+            constructor(name, age, grade) {
+                super(name, age); // 通过super调用父类的构造函数！
+                this.grade = grade;
+            }
+            showName() {
+                console.log("调用子类方法", this.name);
+            }
+        }
+        let student6 = new Student6('aaa', 18, 1);
+        // console.log(student6);
+        // console.log(student6.showName()); // 子类方法会覆盖父类的
+
+        // new的实现
+        function newCreate(F) {
+            // 参数F是构造函数
+            let obj = {};
+            obj.__proto__ = F.prototype; // 实现原型链的搭建
+            F.call(obj, ...arguments); // 实现构造函数
+            return obj;
+        }
+        // let pp = newCreate(Person);
+        // let pp2 = newCreate(Person);
+        // console.log(pp,pp2);
+
+        // Object.create的实现
+        function create(obj) {
+            let fn = function () { };
+            fn.prototype = obj; // 创造原型链为obj的对象
+            return new fn();
+        }
+        // let cc = Object.create(p);
+        // let cc2 = create(p);
+        // console.log(cc,cc2);
+
+        // TODO: 防抖和节流
+        // 1.防抖
+        function debounce(fn, wait) {
+            let timer; // 利用闭包，获取这个作用域的变量。
+            return function () {
+                let context = this; // 获取上下文环境。注意，这里是闭包，上下文是基于执行时的上下文，一般指向window全局
+                let args = arguments; // 之所以要提前保存arguments是因为在setTimeout中也有个arguments
+                if (timer) {
+                    // 如果timer存在，证明重复点击了！
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(() => {
+                    fn.apply(context, args);
+                }, wait);
+            }
+        }
+        // function fn(){
+        //     console.log('!!!');
+        // }
+        // debounce(fn,1000)();
+
+        // 2.节流
+        function throttle(fn, delay) {
+            let preTime = Date.now(); // 因为闭包，需要用一个变量先获取这个闭包！
+            return function () {
+                let curTime = Date.now();
+                console.log(preTime, curTime);
+                if (curTime - preTime >= delay) {
+                    fn.apply(this, arguments);
+                    preTime = curTime;
+                }
+            }
+        }
+        function fn() {
+            console.log("!!!");
+        }
+        // let throttleFn = throttle(fn,1);
+        // throttleFn();
+        // throttleFn();
+        // throttleFn();
+        // throttleFn();
+
+
+        // TODO: Ajax
+        // ajax({
+        //     url: 'http://localhost:9000',
+        //     method: 'POST',
+        //     format: 'json',
+        //     data: {
+        //         name: 'tom'
+        //     },
+        //     headers: {
+        //         // 'Content-Type': 'application/x-www-form-urlencoded',
+        //         'Content-Type': 'application/json',
+        //         'x-token': 'xxxxx'
+        //     },
+        //     withCredentials: true,
+        //     handlers: {
+        //         'onload': function () {
+        //             console.log('自定义onload')
+        //         }
+        //     }
+        // }).then(res => {
+        //     console.log(res, 222222)
+        // }).catch(err => {
+        //     console.log(err)
+        // })
+        // 1. XMLHttpRequest
+        // 普通的get请求
+        function getXHR(url, data) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('get', url, true); // 异步请求
+            xhr.ontimeout = function () {
+                console.log(xhr.status, xhr.readyState, xhr.responseText)
+                console.log("请求超时");
+            }
+            xhr.timeout = 2000; // 设置请求超时时间
+            xhr.onload = function () {
+                console.log("请求成功后的回调函数，并且获取返回的报文");
+                console.log(xhr.response, xhr.responseText);
+            }
+            xhr.send(data);
+        }
+        // 普通的post请求
+        function postXHR(url, data) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('post', url, true); // 异步请求
+            xhr.ontimeout = function () {
+                console.log("请求超时");
+            }
+            xhr.timeout = 2000; // 设置请求超时时间
+            xhr.onload = function () {
+                console.log("请求成功后的回调函数，并且获取返回的报文");
+                console.log(xhr.response, xhr.responseText);
+            }
+            // 请求体为 json 格式
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(data);
+            xhr.send(JSON.stringify({ name: "xxx", age: 18 }));
+        }
+
+        // ajax的实现
+        function ajaxFn(options) {
+            // 获取请求地址
+            let url = options.url;
+            // 获取请求方法
+            let method = options.method.toLocaleLowerCase() || 'get';
+            // 默认异步
+            let async = options.async !== false;
+            // 获取请求request的数据
+            let data = options.data;
+            // 实例化XMLHttpRequest
+            let xhr = new XMLHttpRequest();
+            // 设置超时时间
+            if (options.timeout && options.timeout > 0) {
+                xhr.timeout = options.timeout;
+            }
+            // 之所以返回一个Promise，是为了方面后续的回调函数以获取相应报文
+            return new Promise((resolve, reject) => {
+                // 添加超时回调
+                xhr.ontimeout = () => reject && reject("请求超时！");
+                // 成功回调
+                xhr.onload = () => {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                            resolve && resolve(xhr.responseText); //将响应报文传到回调函数中
+                        } else {
+                            reject && reject();
+                        }
+                    }
+                }
+                // 失败回调
+                xhr.onerror = (err) => reject && reject(err);
+                // 拼接参数
+                let params = [];
+                let encodeDate;
+                if (data instanceof Object) {
+                    for (let key in data) {
+                        params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+                    }
+                    encodeDate = params.join('&');
+                }
+                // get请求
+                if (method === 'get') {
+                    // 把参数附着在url后面
+                    const index = url.indexOf('?');
+                    if (index === -1) {
+                        url += '?';
+                    } else if (index !== url.length - 1) {
+                        url += '&';
+                    }
+                    url += encodeDate;
+                }
+                // 初始化请求
+                xhr.open(method, url, async);
+                if (method === 'get') {
+                    xhr.send(null); // 已经拼接url了
+                } else {
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                    xhr.send(encodeDate);
+                }
+            })
+        }
+
+        // TODO: JOSN
+        let JSONObj = {
+            "name": "xxx",
+            "age": "18",
+            "like": ["aaa", "bbb", "ccc"]
+        }
+        let obj = {
+            name: "xxx",
+            age: 18,
+            like: ["aaa", "bbb", "ccc"]
+        }
+        let JSONStr = JSON.stringify(obj);
+        console.log(JSONStr); // {"name":"xxx","age":"18","like":["aaa","bbb","ccc"]}
+        let JSONObject = JSON.parse(JSONStr);
+        console.log(JSONObject);
+
+        // TODO: 关于异步
+        // console.log(1);
+        // setTimeout(() => {
+        //     // 异步任务会挂起，先执行同步任务（也就是同步任务全都执行完再到异步）
+        //     console.log(7); // 这个最最最后才执行！
+        // }, 0)
+        // console.log(2);
+        // let p = new Promise((resolve, reject) => {
+        //     // 在Promise新建后会立即执行，所以首先输出 AAA（相当于同步任务一样）
+        //     console.log(3);
+        //     resolve();
+        // }).then(() => {
+        //     // 然后，then方法指定的回调函数将在当前脚本所有同步任务执行完后才会执行。
+        //     console.log(6);
+        // })
+        // console.log(4);
+        // let a = 0;
+        // for (let i = 0; i < 1000000; i++) {
+        //     a++;
+        // }
+        // console.log('5', a);
+
+        // const p = new Promise((resolve,reject)=>{
+        //     resolve("!!!!"); // resolve相应传参，赋值给then的resolve参数
+        // }).then((resolve)=>{
+        //     console.log(resolve);
+        // })
+
+
+        // TODO: 闭包
+        // 函数对象可以通过作用域链相互关联起来，函数体内部的变量可以保存在函数作用域内，这种特性称为“闭包”
+        // 所谓闭包，就是一个函数，这个函数能够访问其他函数的作用域中的变量。
+        // 私有变量可以用到闭包。
+        // let scope = 'global scope'; // 此为全局变量
+        // let checkScoed = function () {
+        //     let scope = 'local scoed'; // 此为函数内部的局部变量
+        //     function fn() {
+        //         console.log(scope); // 注意，这里最后打印的是局部变量
+        //         return scope;
+        //     }
+        //     return fn; // 把函数返回出去
+        // }
+        // console.log(checkScoed()());
+
+        // 实现定时器
+        // function timer() {
+        //     let time = 0;
+        //     function add() {
+        //         time++;
+        //         console.log(time);
+        //         return time;
+        //     }
+        //     return add;
+        // }
+        // // 获取函数返回出去的闭包函数，这个函数一直包含time这个局部变量
+        // let add = timer();
+        // add(); // 1
+        // add(); // 2
+        // add(); // 3
+        // add(); // 4
+
+        // 使用立即执行函数
+        // var uniqueInteger = (function () {
+        //     var counter = 0;
+        //     return function () {
+        //         return counter++;
+        //     }
+        // })();
+
+        // 每次调用counter()都会创建一个新的作用域链和一个新的私有变量。
+        // 因此，如果调用counter()两次，则会得到两个计数器对象，而且彼此包含不同的私有变量，
+        // 调用其中一个计数器对象的count()或reset()不会影响到另外一个对象。
+        // function counter() {
+        //     var n = 0;
+        //     return {
+        //         count: function () { console.log(++n); return n; },
+        //         reset: function () { n = 0; }
+        //     };
+        // }
+        // var c = counter(), d = counter();        // 创建两个计数器
+        // c.count(); // =>1
+        // d.count(); // =>1: 它们互不干扰
+        // c.reset(); // reset()和 count()方法共享状态
+        // c.count(); // =>1: 因为我们重置了c
+        // d.count(); // =>2: 而没有重置d
+    </script>
+</body>
+
+</html>

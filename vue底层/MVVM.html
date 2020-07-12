@@ -1,0 +1,58 @@
+<!--
+ * @Autor: hjz
+ * @Date: 2020-07-11 17:14:19
+ * @LastEditors: hjz
+ * @LastEditTime: 2020-07-11 21:37:27
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="school.name">
+        <div>name:{{school.name}}</div>
+        <div>age:{{school.age}}</div>
+        <div>newName:{{getNewName}}</div>
+        {{school.name}}
+        {{school.age}}
+        <!-- computed实际上就是在数据劫掠上get的时候获取执行结果 -->
+        <ul>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+        </ul>
+        <button v-on:click="change">更新操作</button>
+    </div>
+    <script src="./MVVM.js"></script>
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                school: {
+                    name: 'xxx',
+                    age: '18',
+                }
+            },
+            computed: {
+                getNewName() {
+                    return this.school.name + "学校";
+                }
+            },
+            methods:{
+                change(){
+                    this.school.name = 'bbbbbbb';
+                }
+            }
+        })
+        //  vm.$data.school.name = '11'; // 直接在命令行中执行
+    </script>
+</body>
+
+</html>

@@ -2,7 +2,7 @@
  * @Autor: hjz
  * @Date: 2020-05-26 20:18:47
  * @LastEditors: hjz
- * @LastEditTime: 2020-06-17 18:04:38
+ * @LastEditTime: 2020-06-29 11:22:02
  * @Description: leetcode
 -->
 <!DOCTYPE html>
@@ -50,6 +50,29 @@
                 }
             }
         }
+
+        // TODO: DFS算法框架
+        // def dfs(n){                         //可以描述阶段的状态
+        //     if (valid) { 收集结果，返回 }	        //出口条件
+        //     if (pruning) return;             //剪枝，这一步是为了加快回溯过程，降低程序执行时间
+        //     for (i: 1~p) {                      //选择该阶段的所有决策
+        //         选择可行决策;                   //剪枝的一种 
+        //         add;						  //标记已访问该点
+        //         DFS(n + 1);                     //进入下一阶段
+        //         recover;                      //还原
+        //     }
+        // }
+        // TODO: BFS算法框架
+        // def bfs(){
+        //     q.push(head);//一般为q这种优先队列来处理bfs问题
+        //     while (!q.empty()) {
+        //         temp = q.front;//弹出元素
+        //         q.pop();
+        //         if (temp为目标状态) 输出解
+        //         if (temp不合法) continue;
+        //         if (temp合法) q.push(temp + Δ);
+        //     }
+        // }
     </script>
     <script>
         /*
@@ -1923,22 +1946,6 @@
         // let n = -2;
         // console.log(myPow(x, n));
 
-        // TODO: 关于异步
-        // console.log(1);
-        // setTimeout(()=>{
-        //     // 异步任务会挂起，先执行同步任务
-        //     console.log(2); // 这个最最最后才执行！
-        // },0)
-        // console.log("~~~~");
-        // let p = new Promise((resolve,reject)=>{
-        //     // 在Promise新建后会立即执行，所以首先输出 AAA（相当于同步任务一样）
-        //     console.log(3);
-        //     resolve();
-        // }).then(()=>{
-        //     // 然后，then方法指定的回调函数将在当前脚本所有同步任务执行完后才会执行。
-        //     console.log(4);
-        // })
-        // console.log('end'); 
 
         // TODO: 55. 跳跃游戏
         // 跳跃游戏2是寻找最少跳跃次数，这个是查找是否可以跳到结束
@@ -2006,9 +2013,96 @@
             re.push([left, right]);
             return re;
         };
-        let intervals = [[1, 3], [2, 6], [8, 10], [15, 18]];
-        // let intervals = [[1, 4], [4, 5]];
-        console.log(merge(intervals));
+        // let intervals = [[1, 3], [2, 6], [8, 10], [15, 18]];
+        // // let intervals = [[1, 4], [4, 5]];
+        // console.log(merge(intervals));
+
+        // TODO: 58. 最后一个单词的长度
+        // 给定一个仅包含大小写字母和空格 ' ' 的字符串 s，返回其最后一个单词的长度。
+        // 输入: "Hello the World" 输出: 5
+        // 一个单词是指仅由字母组成、不包含任何空格字符的 最大子字符串
+        var lengthOfLastWord = function (s) {
+            if (!s || s.length === 0) {
+                return 0;
+            }
+            s = s.trim();
+            let arr = s.split(" ");
+            let re = 0;
+            return arr[arr.length - 1].length;
+        };
+
+        // TODO: 59. 螺旋矩阵 II
+        // 给定一个正整数 n，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。
+        // 输入: 3
+        // 输出:
+        // [
+        //     [1, 2, 3],
+        //     [8, 9, 4],
+        //     [7, 6, 5]
+        // ]
+        // 思路，模拟法，让程序模拟这样的顺序来填写二维数组
+        var generateMatrix = function (n) {
+            // 设置边界
+            let l = 0;
+            let r = n - 1;
+            let t = 0;
+            let b = n - 1;
+            let num = 1;
+            let target = n * n;
+            let re = [];
+            for (let i = 0; i < n; i++) {
+                re[i] = []; // 创建二维数组
+            }
+            // 需要用while来进行填写矩阵，而不是用两个for循环
+            while (num <= target) {
+                // 从左到右
+                for (let i = l; i <= r; i++) {
+                    re[t][i] = num++;
+                }
+                t++; // 最上面那一行不能在遍历了！
+                // 从上到下
+                for (let i = t; i <= b; i++) {
+                    re[i][r] = num++;
+                }
+                r--; // 最右边不能再遍历
+                // 从右往左
+                for (let i = r; i >= l; i--) {
+                    re[b][i] = num++;
+                }
+                b--;
+                for (let i = b; i >= t; i--) {
+                    re[i][l] = num++;
+                }
+                l++;
+            }
+            return re;
+        };
+
+        // TODO: 61. 旋转链表
+        // 给定一个链表，旋转链表，将链表每个节点向右移动 k 个位置，其中 k 是非负数。
+        // 思路，将链表变成一个环！然后移动首位指针
+        // 注意，这里有个坑！！！因为是右移动，但实际上只能实现头部左移动，需要用减法n-k
+        var rotateRight = function (head, k) {
+            if (head === null || k < 0) {
+                return null;
+            }
+            let tail = head;
+            let curNode = head;
+            let n = 1;
+            while (curNode.next !== null) {
+                curNode = curNode.next;
+                tail = curNode; // 找到尾节点
+                n++;
+            }
+            // 拼接成环
+            tail.next = head;
+            for (let i = 0; i < n - k % n; i++) {
+                head = head.next;
+                tail = tail.next;
+            }
+            tail.next = null;
+            return head;
+        };
     </script>
 </body>
 
